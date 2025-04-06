@@ -2,12 +2,12 @@ const { sequelize } = require('../config/database')
 const logger = require('../utils/logger')
 
 // Import all models
-const User = require('../models/user')
-const UserSetting = require('../models/usersetting')
-const Allergy = require('../models/allergy')
-const Conversation = require('../models/conversation')
-const Participant = require('../models/participant')
-const AppointmentService = require('../models/appointmentservice')
+const User = require('../db/models/user')
+const UserSetting = require('../db/models/usersetting')
+const Allergy = require('../db/models/allergy')
+const Conversation = require('../db/models/conversation')
+const Participant = require('../db/models/participant')
+const AppointmentService = require('../db/models/appointmentservice')
 
 const initDatabase = async () => {
   try {
