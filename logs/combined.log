@@ -1,0 +1,33 @@
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-04-06T02:08:23.401Z"}
+{"level":"error","message":"Unable to connect to the database: SASL: SCRAM-SERVER-FIRST-MESSAGE: client password must be a string","name":"SequelizeConnectionError","original":{},"parent":{},"stack":"SequelizeConnectionError: SASL: SCRAM-SERVER-FIRST-MESSAGE: client password must be a string\n    at Client._connectionCallback (C:\\Users\\user\\OneDrive\\Documentos\\Alt_School\\MedInsight-API\\node_modules\\sequelize\\lib\\dialects\\postgres\\connection-manager.js:149:20)\n    at Client._handleErrorWhileConnecting (C:\\Users\\user\\OneDrive\\Documentos\\Alt_School\\MedInsight-API\\node_modules\\pg\\lib\\client.js:336:19)\n    at Client._handleErrorEvent (C:\\Users\\user\\OneDrive\\Documentos\\Alt_School\\MedInsight-API\\node_modules\\pg\\lib\\client.js:346:19)\n    at Connection.emit (node:events:519:28)\n    at Client._handleAuthSASLContinue (C:\\Users\\user\\OneDrive\\Documentos\\Alt_School\\MedInsight-API\\node_modules\\pg\\lib\\client.js:284:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)","timestamp":"2025-04-06T02:08:23.747Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-04-06T02:15:07.707Z"}
+{"level":"info","message":"Database connection established successfully","timestamp":"2025-04-06T02:15:08.076Z"}
+{"level":"info","message":"Server is running on port 3000 in development mode","timestamp":"2025-04-06T02:15:08.078Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-04-06T02:22:14.439Z"}
+{"level":"info","message":"Database connection established successfully","timestamp":"2025-04-06T02:22:14.823Z"}
+{"level":"info","message":"Server is running on port 3000 in development mode","timestamp":"2025-04-06T02:22:14.827Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-04-06T02:23:28.066Z"}
+{"level":"info","message":"Database connection established successfully","timestamp":"2025-04-06T02:23:28.547Z"}
+{"level":"info","message":"Server is running on port 3000 in development mode","timestamp":"2025-04-06T02:23:28.551Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-04-06T02:23:54.484Z"}
+{"level":"info","message":"Database connection established successfully","timestamp":"2025-04-06T02:23:55.090Z"}
+{"level":"info","message":"Server is running on port 3000 in development mode","timestamp":"2025-04-06T02:23:55.094Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-04-06T02:24:15.366Z"}
+{"level":"info","message":"Database connection established successfully","timestamp":"2025-04-06T02:24:16.251Z"}
+{"level":"info","message":"Server is running on port 3000 in development mode","timestamp":"2025-04-06T02:24:16.255Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-04-06T02:24:52.168Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-04-06T02:25:57.758Z"}
+{"level":"info","message":"Database connection established successfully","timestamp":"2025-04-06T02:25:58.400Z"}
+{"level":"info","message":"Server is running on port 3000 in development mode","timestamp":"2025-04-06T02:25:58.408Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-04-06T02:26:40.774Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-04-06T02:26:55.745Z"}
+{"level":"info","message":"Database connection established successfully","timestamp":"2025-04-06T02:27:01.477Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-04-06T02:27:24.077Z"}
+{"level":"info","message":"Database connection established successfully","timestamp":"2025-04-06T02:27:25.185Z"}
+{"level":"info","message":"Server is running on port 3000 in development mode","timestamp":"2025-04-06T02:27:25.190Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-04-06T02:27:59.088Z"}
+{"level":"info","message":"Database connection established successfully","timestamp":"2025-04-06T02:27:59.602Z"}
+{"level":"info","message":"Server is running on port 3000 in development mode","timestamp":"2025-04-06T02:27:59.605Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-04-06T02:28:14.675Z"}
+{"level":"info","message":"Database connection established successfully","timestamp":"2025-04-06T02:28:15.239Z"}
+{"level":"info","message":"Server is running on port 3000 in development mode","timestamp":"2025-04-06T02:28:15.243Z"}
