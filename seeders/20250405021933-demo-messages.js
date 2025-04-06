@@ -2,36 +2,52 @@
 
 module.exports = {
   up: async (queryInterface) => {
-    const { Conversation, User } = queryInterface.sequelize.models
+    const { User, Conversation } = queryInterface.sequelize.models
 
-    const [directConvo] = await Conversation.findAll({
-      where: { type: 'direct' },
-    })
-    const [patient, practitioner] = await User.findAll({
-      where: { role: ['patient', 'practitioner'] },
-      limit: 2,
-    })
+    // Get a patient and a practitioner
+    const [patients] = await queryInterface.sequelize.query(
+      "SELECT id FROM user WHERE role = 'patient' LIMIT 1"
+    )
+    const [practitioners] = await queryInterface.sequelize.query(
+      "SELECT id FROM user WHERE role = 'practitioner' LIMIT 1"
+    )
+
+    // Get a conversation
+    const conversation = await Conversation.findOne()
 
     await queryInterface.bulkInsert(
-      'messages',
+      'message',
       [
         {
-          content: 'Hi Doctor, I have a question about my prescription',
-          conversation_id: directConvo.id,
-          sender_id: patient.id,
-          status: 'read',
+          conversation_id: conversation.id,
+          sender_id: patients[0].id,
+          content: 'Hello, I have a question about my recent appointment.',
+          status: 'sent',
+          created_at: new Date(),
+          updated_at: new Date(),
         },
         {
-          content: 'Sure, what would you like to know?',
-          conversation_id: directConvo.id,
-          sender_id: practitioner.id,
-          status: 'delivered',
+          conversation_id: conversation.id,
+          sender_id: practitioners[0].id,
+          content: 'Of course! How can I help you?',
+          status: 'sent',
+          created_at: new Date(),
+          updated_at: new Date(),
+        },
+        {
+          conversation_id: conversation.id,
+          sender_id: patients[0].id,
+          content: 'When will my test results be available?',
+          status: 'sent',
+          created_at: new Date(),
+          updated_at: new Date(),
         },
       ],
       {}
     )
   },
+
   down: async (queryInterface) => {
-    await queryInterface.bulkDelete('messages', null, {})
+    await queryInterface.bulkDelete('message', null, {})
   },
 }

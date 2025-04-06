@@ -13,20 +13,33 @@ const Attachment = sequelize.define(
       type: DataTypes.STRING,
       field: 'file_url',
       allowNull: false,
+      validate: {
+        notEmpty: true,
+        isUrl: true,
+      },
     },
     fileType: {
       type: DataTypes.ENUM('image', 'pdf', 'video', 'document'),
       field: 'file_type',
       allowNull: false,
+      validate: {
+        isIn: [['image', 'pdf', 'video', 'document']],
+      },
     },
     fileName: {
       type: DataTypes.STRING,
       field: 'file_name',
+      validate: {
+        notEmpty: true,
+      },
     },
     messageId: {
       type: DataTypes.INTEGER,
       field: 'message_id',
       allowNull: false,
+      validate: {
+        isInt: true,
+      },
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -36,12 +49,17 @@ const Attachment = sequelize.define(
       type: DataTypes.DATE,
       field: 'updated_at',
     },
+    deletedAt: {
+      type: DataTypes.DATE,
+      field: 'deleted_at',
+    },
   },
   {
-    tableName: 'attachments',
+    tableName: 'attachment',
     timestamps: true,
     underscored: true,
     freezeTableName: true,
+    paranoid: true,
   }
 )
 
@@ -51,3 +69,5 @@ Attachment.associate = (models) => {
     as: 'Message',
   })
 }
+
+module.exports = Attachment

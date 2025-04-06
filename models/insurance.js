@@ -12,32 +12,55 @@ const Insurance = sequelize.define(
     provider: {
       type: DataTypes.STRING,
       allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
     },
     policyNumber: {
       type: DataTypes.STRING,
       field: 'policy_number',
       allowNull: false,
       unique: true,
+      validate: {
+        notEmpty: true,
+      },
     },
     coverageType: {
       type: DataTypes.ENUM('basic', 'premium', 'comprehensive'),
       field: 'coverage_type',
       defaultValue: 'basic',
+      validate: {
+        isIn: [['basic', 'premium', 'comprehensive']],
+      },
     },
     validFrom: {
       type: DataTypes.DATEONLY,
       field: 'valid_from',
       allowNull: false,
+      validate: {
+        isDate: true,
+      },
     },
     validUntil: {
       type: DataTypes.DATEONLY,
       field: 'valid_until',
       allowNull: false,
+      validate: {
+        isDate: true,
+        isAfterValidFrom(value) {
+          if (value <= this.validFrom) {
+            throw new Error('Valid until date must be after valid from date')
+          }
+        },
+      },
     },
     userId: {
       type: DataTypes.INTEGER,
       field: 'user_id',
       allowNull: false,
+      validate: {
+        isInt: true,
+      },
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -53,7 +76,7 @@ const Insurance = sequelize.define(
     },
   },
   {
-    tableName: 'insurances',
+    tableName: 'insurance',
     timestamps: true,
     underscored: true,
     freezeTableName: true,
@@ -72,3 +95,5 @@ Insurance.associate = (models) => {
     as: 'Claims',
   })
 }
+
+module.exports = Insurance

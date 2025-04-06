@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('departments', {
+    await queryInterface.createTable('department', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -16,18 +16,20 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'hospitals',
+          model: 'hospital',
           key: 'id',
         },
+        onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
       head_practitioner_id: {
         type: Sequelize.INTEGER,
         allowNull: true,
         references: {
-          model: 'users',
+          model: 'user',
           key: 'id',
         },
+        onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
       },
       created_at: {
@@ -44,11 +46,15 @@ module.exports = {
       },
     })
 
-    await queryInterface.addIndex('departments', ['hospital_id'])
-    await queryInterface.addIndex('departments', ['head_practitioner_id'])
+    await queryInterface.addIndex('department', ['hospital_id'], {
+      name: 'department_hospital_id_idx',
+    })
+    await queryInterface.addIndex('department', ['head_practitioner_id'], {
+      name: 'department_head_practitioner_id_idx',
+    })
   },
 
   down: async (queryInterface) => {
-    await queryInterface.dropTable('departments')
+    await queryInterface.dropTable('department')
   },
 }

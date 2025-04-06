@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('health_metrics', {
+    await queryInterface.createTable('health_metric', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -35,7 +35,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'users',
+          model: 'user',
           key: 'id',
         },
         onDelete: 'CASCADE',
@@ -48,14 +48,24 @@ module.exports = {
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       },
+      deleted_at: {
+        type: Sequelize.DATE,
+        allowNull: true,
+      },
     })
 
-    await queryInterface.addIndex('health_metrics', ['user_id'])
-    await queryInterface.addIndex('health_metrics', ['metric_type'])
-    await queryInterface.addIndex('health_metrics', ['recorded_at'])
+    await queryInterface.addIndex('health_metric', ['user_id'], {
+      name: 'health_metric_user_id_idx',
+    })
+    await queryInterface.addIndex('health_metric', ['metric_type'], {
+      name: 'health_metric_metric_type_idx',
+    })
+    await queryInterface.addIndex('health_metric', ['recorded_at'], {
+      name: 'health_metric_recorded_at_idx',
+    })
   },
 
   down: async (queryInterface) => {
-    await queryInterface.dropTable('health_metrics')
+    await queryInterface.dropTable('health_metric')
   },
 }

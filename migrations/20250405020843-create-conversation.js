@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('conversations', {
+    await queryInterface.createTable('conversation', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -19,7 +19,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'users',
+          model: 'user',
           key: 'id',
         },
       },
@@ -37,9 +37,11 @@ module.exports = {
       },
     })
 
-    await queryInterface.addIndex('conversations', ['created_by'])
+    await queryInterface.addIndex('conversation', ['created_by'], {
+      name: 'conversation_created_by_idx',
+    })
   },
   down: async (queryInterface) => {
-    await queryInterface.dropTable('conversations')
+    await queryInterface.dropTable('conversation')
   },
 }

@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('practitioner_departments', {
+    await queryInterface.createTable('practitioner_department', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -12,18 +12,20 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'users',
+          model: 'user',
           key: 'id',
         },
+        onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
       department_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'departments',
+          model: 'department',
           key: 'id',
         },
+        onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
       created_at: {
@@ -34,16 +36,35 @@ module.exports = {
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       },
+      deleted_at: {
+        type: Sequelize.DATE,
+        allowNull: true,
+      },
     })
 
-    await queryInterface.addConstraint('practitioner_departments', {
+    // Add indexes with proper naming
+    await queryInterface.addIndex(
+      'practitioner_department',
+      ['practitioner_id'],
+      {
+        name: 'practitioner_department_practitioner_id_idx',
+      }
+    )
+    await queryInterface.addIndex(
+      'practitioner_department',
+      ['department_id'],
+      {
+        name: 'practitioner_department_department_id_idx',
+      }
+    )
+    await queryInterface.addConstraint('practitioner_department', {
       fields: ['practitioner_id', 'department_id'],
       type: 'unique',
-      name: 'unique_practitioner_department',
+      name: 'practitioner_department_unique_idx',
     })
   },
 
   down: async (queryInterface) => {
-    await queryInterface.dropTable('practitioner_departments')
+    await queryInterface.dropTable('practitioner_department')
   },
 }

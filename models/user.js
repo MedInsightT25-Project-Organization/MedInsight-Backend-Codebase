@@ -3,7 +3,7 @@ const { Model, DataTypes } = require('sequelize')
 const sequelize = require('../config/database')
 
 const User = sequelize.define(
-  'User',
+  'user',
   {
     id: {
       type: DataTypes.INTEGER,
@@ -54,14 +54,14 @@ const User = sequelize.define(
     },
   },
   {
-    tableName: 'users',
+    tableName: 'user',
     timestamps: true,
     underscored: true,
     freezeTableName: true,
     paranoid: true,
   })
 
-User.associate = (models) => {
+  User.associate = (models) => {
   User.hasMany(models.Appointment, {
     as: 'PatientAppointments',
     foreignKey: 'patient_id',

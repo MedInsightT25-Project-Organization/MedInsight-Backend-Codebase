@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('hospitals', {
+    await queryInterface.createTable('hospital', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -51,14 +51,14 @@ module.exports = {
     })
 
     // Add spatial index for geolocation
-    await queryInterface.addIndex('hospitals', ['geolocation'], {
+    await queryInterface.addIndex('hospital', ['geolocation'], {
       using: 'GIST',
-      name: 'idx_hospitals_geolocation',
+      name: 'idx_hospital_geolocation',
     })
   },
 
   down: async (queryInterface) => {
-    await queryInterface.removeIndex('hospitals', 'idx_hospitals_geolocation')
-    await queryInterface.dropTable('hospitals')
+    await queryInterface.removeIndex('hospital', 'idx_hospital_geolocation')
+    await queryInterface.dropTable('hospital')
   },
 }

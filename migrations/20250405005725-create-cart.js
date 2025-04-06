@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('carts', {
+    await queryInterface.createTable('cart', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -12,9 +12,10 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'users',
+          model: 'user',
           key: 'id',
         },
+        onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
       status: {
@@ -35,11 +36,12 @@ module.exports = {
       },
     })
 
-    await queryInterface.addIndex('carts', ['user_id'])
-    await queryInterface.addIndex('carts', ['status'])
+    await queryInterface.addIndex('cart', ['user_id'], {
+      name: 'cart_user_id_idx',
+    })
   },
 
   down: async (queryInterface) => {
-    await queryInterface.dropTable('carts')
+    await queryInterface.dropTable('cart')
   },
 }

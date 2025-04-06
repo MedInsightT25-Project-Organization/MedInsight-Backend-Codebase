@@ -2,23 +2,23 @@
 
 module.exports = {
   up: async (queryInterface) => {
-    const { User, Hospital, Service } = queryInterface.sequelize.models
+    const { user, hospital, service } = queryInterface.sequelize.models
 
     // Get patients
     const [patients] = await queryInterface.sequelize.query(
-      "SELECT id FROM users WHERE role = 'patient' LIMIT 2"
+      "SELECT id FROM user WHERE role = 'patient' LIMIT 2"
     )
 
     // Get practitioners
     const [practitioners] = await queryInterface.sequelize.query(
-      "SELECT id FROM users WHERE role = 'practitioner' LIMIT 2"
+      "SELECT id FROM user WHERE role = 'practitioner' LIMIT 2"
     )
 
     // Get hospitals
-    const hospitals = await Hospital.findAll({ limit: 2 })
+    const hospitals = await hospital.findAll({ limit: 2 })
 
     // Get services
-    const services = await Service.findAll({ limit: 2 })
+    const services = await service.findAll({ limit: 2 })
 
     await queryInterface.bulkInsert(
       'ratings',

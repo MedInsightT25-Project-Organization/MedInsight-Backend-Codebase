@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('notifications', {
+    await queryInterface.createTable('notification', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -27,7 +27,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'users',
+          model: 'user',
           key: 'id',
         },
         onDelete: 'CASCADE',
@@ -40,14 +40,24 @@ module.exports = {
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       },
+      deleted_at: {
+        type: Sequelize.DATE,
+        allowNull: true,
+      },
     })
 
-    await queryInterface.addIndex('notifications', ['user_id'])
-    await queryInterface.addIndex('notifications', ['status'])
-    await queryInterface.addIndex('notifications', ['type'])
+    await queryInterface.addIndex('notification', ['user_id'], {
+      name: 'notification_user_id_idx',
+    })
+    await queryInterface.addIndex('notification', ['status'], {
+      name: 'notification_status_idx',
+    })
+    await queryInterface.addIndex('notification', ['type'], {
+      name: 'notification_type_idx',
+    })
   },
 
   down: async (queryInterface) => {
-    await queryInterface.dropTable('notifications')
+    await queryInterface.dropTable('notification')
   },
 }

@@ -33,7 +33,7 @@ const Participant = sequelize.define(
     },
   },
   {
-    tableName: 'participants',
+    tableName: 'participant',
     timestamps: true,
     underscored: true,
     freezeTableName: true,
@@ -48,3 +48,5 @@ Participant.associate = (models) => {
     foreignKey: 'user_id',
   })
 }
+
+module.exports = Participant

@@ -20,38 +20,62 @@ const TestResult = sequelize.define(
       ),
       field: 'test_type',
       allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
     },
     resultData: {
       type: DataTypes.TEXT,
       field: 'result_data',
       allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
     },
     status: {
       type: DataTypes.ENUM('pending', 'completed', 'abnormal'),
       defaultValue: 'pending',
+      validate: {
+        isIn: [['pending', 'completed', 'abnormal']],
+      },
     },
     testDate: {
       type: DataTypes.DATE,
       field: 'test_date',
       allowNull: false,
+      validate: {
+        isDate: true,
+      },
     },
     fileUrl: {
       type: DataTypes.STRING,
       field: 'file_url',
+      validate: {
+        isUrl: true,
+      },
     },
     medicalRecordId: {
       type: DataTypes.INTEGER,
       field: 'medical_record_id',
       allowNull: false,
+      validate: {
+        isInt: true,
+      },
     },
     practitionerId: {
       type: DataTypes.INTEGER,
       field: 'practitioner_id',
       allowNull: false,
+      validate: {
+        isInt: true,
+      },
     },
     appointmentId: {
       type: DataTypes.INTEGER,
       field: 'appointment_id',
+      validate: {
+        isInt: true,
+      },
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -67,7 +91,7 @@ const TestResult = sequelize.define(
     },
   },
   {
-    tableName: 'test_results',
+    tableName: 'test_result',
     timestamps: true,
     underscored: true,
     freezeTableName: true,

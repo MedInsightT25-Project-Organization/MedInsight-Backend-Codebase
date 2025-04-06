@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('services', {
+    await queryInterface.createTable('service', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -27,18 +27,20 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'hospitals',
+          model: 'hospital',
           key: 'id',
         },
+        onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
       category_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'service_categories',
+          model: 'service_category',
           key: 'id',
         },
+        onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
       created_at: {
@@ -55,12 +57,18 @@ module.exports = {
       },
     })
 
-    await queryInterface.addIndex('services', ['hospital_id'])
-    await queryInterface.addIndex('services', ['category_id'])
-    await queryInterface.addIndex('services', ['name'])
+    await queryInterface.addIndex('service', ['hospital_id'], {
+      name: 'service_hospital_id_idx',
+    })
+    await queryInterface.addIndex('service', ['category_id'], {
+      name: 'service_category_id_idx',
+    })
+    await queryInterface.addIndex('service', ['name'], {
+      name: 'service_name_idx',
+    })
   },
 
   down: async (queryInterface) => {
-    await queryInterface.dropTable('services')
+    await queryInterface.dropTable('service')
   },
 }

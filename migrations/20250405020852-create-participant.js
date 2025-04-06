@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('participants', {
+    await queryInterface.createTable('participant', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -16,7 +16,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'conversations',
+          model: 'conversation',
           key: 'id',
         },
         onDelete: 'CASCADE',
@@ -25,7 +25,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'users',
+          model: 'user',
           key: 'id',
         },
         onDelete: 'CASCADE',
@@ -40,15 +40,19 @@ module.exports = {
       },
     })
 
-    await queryInterface.addIndex('participants', ['conversation_id'])
-    await queryInterface.addIndex('participants', ['user_id'])
-    await queryInterface.addConstraint('participants', {
+    await queryInterface.addIndex('participant', ['conversation_id'], {
+      name: 'participant_conversation_id_idx',
+    })
+    await queryInterface.addIndex('participant', ['user_id'], {
+      name: 'participant_user_id_idx',
+    })
+    await queryInterface.addConstraint('participant', {
       fields: ['conversation_id', 'user_id'],
       type: 'unique',
-      name: 'unique_participant',
+      name: 'participant_unique_idx',
     })
   },
   down: async (queryInterface) => {
-    await queryInterface.dropTable('participants')
+    await queryInterface.dropTable('participant')
   },
 }

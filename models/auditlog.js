@@ -13,14 +13,23 @@ const AuditLog = sequelize.define(
       type: DataTypes.INTEGER,
       field: 'user_id',
       allowNull: false,
+      validate: {
+        isInt: true,
+      },
     },
     action: {
       type: DataTypes.STRING(255),
       allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
     },
     ipAddress: {
       type: DataTypes.STRING(45),
       field: 'ip_address',
+      validate: {
+        isIP: true,
+      },
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -36,7 +45,7 @@ const AuditLog = sequelize.define(
     },
   },
   {
-    tableName: 'audit_logs',
+    tableName: 'audit_log',
     timestamps: true,
     underscored: true,
     freezeTableName: true,

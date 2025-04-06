@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('allergies', {
+    await queryInterface.createTable('allergy', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -27,7 +27,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'users',
+          model: 'user',
           key: 'id',
         },
         onDelete: 'CASCADE',
@@ -46,11 +46,15 @@ module.exports = {
       },
     })
 
-    await queryInterface.addIndex('allergies', ['user_id'])
-    await queryInterface.addIndex('allergies', ['allergen'])
+    await queryInterface.addIndex('allergy', ['user_id'], {
+      name: 'allergy_user_id_idx',
+    })
+    await queryInterface.addIndex('allergy', ['allergen'], {
+      name: 'allergy_allergen_idx',
+    })
   },
 
   down: async (queryInterface) => {
-    await queryInterface.dropTable('allergies')
+    await queryInterface.dropTable('allergy')
   },
 }

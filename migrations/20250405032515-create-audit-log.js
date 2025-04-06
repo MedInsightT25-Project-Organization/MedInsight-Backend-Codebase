@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('audit_logs', {
+    await queryInterface.createTable('audit_log', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -13,7 +13,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'users',
+          model: 'user',
           key: 'id',
         },
         onUpdate: 'CASCADE',
@@ -29,22 +29,31 @@ module.exports = {
       created_at: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       },
       updated_at: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       },
       deleted_at: {
         type: Sequelize.DATE,
+        allowNull: true,
       },
     })
 
-    await queryInterface.addIndex('audit_logs', ['user_id'], {
-      name: 'audit_logs_user_id_index',
+    await queryInterface.addIndex('audit_log', ['user_id'], {
+      name: 'audit_log_user_id_idx',
+    })
+    await queryInterface.addIndex('audit_log', ['action'], {
+      name: 'audit_log_action_idx',
+    })
+    await queryInterface.addIndex('audit_log', ['created_at'], {
+      name: 'audit_log_created_at_idx',
     })
   },
 
   down: async (queryInterface) => {
-    await queryInterface.dropTable('audit_logs')
+    await queryInterface.dropTable('audit_log')
   },
 }

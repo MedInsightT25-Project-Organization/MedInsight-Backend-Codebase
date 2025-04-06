@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('attachments', {
+    await queryInterface.createTable('attachment', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -23,7 +23,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'messages',
+          model: 'message',
           key: 'id',
         },
         onDelete: 'CASCADE',
@@ -36,11 +36,20 @@ module.exports = {
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       },
+      deleted_at: {
+        type: Sequelize.DATE,
+        allowNull: true,
+      },
     })
 
-    await queryInterface.addIndex('attachments', ['message_id'])
+    await queryInterface.addIndex('attachment', ['message_id'], {
+      name: 'attachment_message_id_idx',
+    })
+    await queryInterface.addIndex('attachment', ['file_type'], {
+      name: 'attachment_file_type_idx',
+    })
   },
   down: async (queryInterface) => {
-    await queryInterface.dropTable('attachments')
+    await queryInterface.dropTable('attachment')
   },
 }

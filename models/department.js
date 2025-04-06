@@ -40,7 +40,7 @@ Department.init(
   {
     sequelize,
     modelName: 'Department',
-    tableName: 'departments',
+    tableName: 'department',
     underscored: true,
     freezeTableName: true,
     paranoid: true,

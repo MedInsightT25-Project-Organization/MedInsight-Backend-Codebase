@@ -34,12 +34,17 @@ const AppointmentService = sequelize.define(
       type: DataTypes.DATE,
       field: 'updated_at',
     },
+    deletedAt: {
+      type: DataTypes.DATE,
+      field: 'deleted_at',
+    },
   },
   {
-    tableName: 'appointment_services',
+    tableName: 'appointment_service',
     timestamps: true,
     underscored: true,
     freezeTableName: true,
+    paranoid: true,
   }
 )
 

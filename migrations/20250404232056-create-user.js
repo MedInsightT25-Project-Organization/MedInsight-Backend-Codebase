@@ -4,7 +4,7 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     // 1. Create Table
-    await queryInterface.createTable('users', {
+    await queryInterface.createTable('user', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -50,13 +50,13 @@ module.exports = {
     })
 
     // 2. Add Indexes
-    await queryInterface.addIndex('users', ['email'], {
+    await queryInterface.addIndex('user', ['email'], {
       unique: true,
-      name: 'users_email_unique',
+      name: 'user_email_unique',
     })
   },
 
   down: async (queryInterface) => {
-    await queryInterface.dropTable('users')
+    await queryInterface.dropTable('user')
   },
 }

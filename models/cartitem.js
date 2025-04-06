@@ -43,12 +43,17 @@ const CartItem = sequelize.define(
       type: DataTypes.DATE,
       field: 'updated_at',
     },
+    deletedAt: {
+      type: DataTypes.DATE,
+      field: 'deleted_at',
+    },
   },
   {
-    tableName: 'cart_items',
+    tableName: 'cart_item',
     timestamps: true,
     underscored: true,
     freezeTableName: true,
+    paranoid: true,
   }
 )
 

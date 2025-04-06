@@ -38,12 +38,17 @@ const MedicalRecord = sequelize.define(
       type: DataTypes.DATE,
       field: 'updated_at',
     },
+    deletedAt: {
+      type: DataTypes.DATE,
+      field: 'deleted_at',
+    },
   },
   {
-    tableName: 'medical_records',
+    tableName: 'medical_record',
     timestamps: true,
     underscored: true,
     freezeTableName: true,
+    paranoid: true,
   }
 )
 

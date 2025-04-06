@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('ratings', {
+    await queryInterface.createTable('rating', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -23,7 +23,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'users',
+          model: 'user',
           key: 'id',
         },
         onDelete: 'CASCADE',
@@ -31,21 +31,21 @@ module.exports = {
       practitioner_id: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'users',
+          model: 'user',
           key: 'id',
         },
       },
       hospital_id: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'hospitals',
+          model: 'hospital',
           key: 'id',
         },
       },
       service_id: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'services',
+          model: 'service',
           key: 'id',
         },
       },
@@ -57,10 +57,14 @@ module.exports = {
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       },
+      deleted_at: {
+        type: Sequelize.DATE,
+        allowNull: true,
+      },
     })
 
     // Add check constraints
-    await queryInterface.addConstraint('ratings', {
+    await queryInterface.addConstraint('rating', {
       fields: ['review_type'],
       type: 'check',
       name: 'rating_type_check',
@@ -82,13 +86,21 @@ module.exports = {
       },
     })
 
-    await queryInterface.addIndex('ratings', ['patient_id'])
-    await queryInterface.addIndex('ratings', ['practitioner_id'])
-    await queryInterface.addIndex('ratings', ['hospital_id'])
-    await queryInterface.addIndex('ratings', ['service_id'])
+    await queryInterface.addIndex('rating', ['patient_id'], {
+      name: 'rating_patient_id_idx',
+    })
+    await queryInterface.addIndex('rating', ['practitioner_id'], {
+      name: 'rating_practitioner_id_idx',
+    })
+    await queryInterface.addIndex('rating', ['hospital_id'], {
+      name: 'rating_hospital_id_idx',
+    })
+    await queryInterface.addIndex('rating', ['service_id'], {
+      name: 'rating_service_id_idx',
+    })
   },
 
   down: async (queryInterface) => {
-    await queryInterface.dropTable('ratings')
+    await queryInterface.dropTable('rating')
   },
 }

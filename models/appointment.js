@@ -57,7 +57,7 @@ Appointment.init(
   {
     sequelize,
     modelName: 'Appointment',
-    tableName: 'appointments',
+    tableName: 'appointment',
     underscored: true,
     freezeTableName: true,
     paranoid: true,
@@ -81,7 +81,7 @@ Appointment.associate = (models) => {
   })
 
   Appointment.belongsToMany(models.Service, {
-    through: 'appointment_services',
+    through: 'appointment_service',
     foreignKey: 'appointment_id',
   })
 }

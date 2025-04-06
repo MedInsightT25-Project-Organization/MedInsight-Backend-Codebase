@@ -48,7 +48,7 @@ const Prescription = sequelize.define(
     },
   },
   {
-    tableName: 'prescriptions',
+    tableName: 'prescription',
     timestamps: true,
     underscored: true,
     freezeTableName: true,

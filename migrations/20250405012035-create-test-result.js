@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('test_results', {
+    await queryInterface.createTable('test_result', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -38,26 +38,30 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'medical_records',
+          model: 'medical_record',
           key: 'id',
         },
+        onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
       practitioner_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'users',
+          model: 'user',
           key: 'id',
         },
+        onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
       appointment_id: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'appointments',
+          model: 'appointment',
           key: 'id',
         },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
       },
       created_at: {
         type: Sequelize.DATE,
@@ -73,12 +77,18 @@ module.exports = {
       },
     })
 
-    await queryInterface.addIndex('test_results', ['medical_record_id'])
-    await queryInterface.addIndex('test_results', ['practitioner_id'])
-    await queryInterface.addIndex('test_results', ['appointment_id'])
+    await queryInterface.addIndex('test_result', ['medical_record_id'], {
+      name: 'test_result_medical_record_id_idx',
+    })
+    await queryInterface.addIndex('test_result', ['practitioner_id'], {
+      name: 'test_result_practitioner_id_idx',
+    })
+    await queryInterface.addIndex('test_result', ['appointment_id'], {
+      name: 'test_result_appointment_id_idx',
+    })
   },
 
   down: async (queryInterface) => {
-    await queryInterface.dropTable('test_results')
+    await queryInterface.dropTable('test_result')
   },
 }

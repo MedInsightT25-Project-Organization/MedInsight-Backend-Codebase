@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('insurances', {
+    await queryInterface.createTable('insurance', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -33,7 +33,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'users',
+          model: 'user',
           key: 'id',
         },
         onDelete: 'CASCADE',
@@ -52,13 +52,28 @@ module.exports = {
       },
     })
 
-    await queryInterface.addIndex('insurances', ['user_id'])
-    await queryInterface.addIndex('insurances', ['policy_number'], {
+    // Add check constraint for valid dates
+    await queryInterface.addConstraint('insurance', {
+      fields: ['valid_from', 'valid_until'],
+      type: 'check',
+      name: 'insurance_valid_dates_check',
+      where: {
+        valid_until: {
+          [Sequelize.Op.gt]: Sequelize.col('valid_from'),
+        },
+      },
+    })
+
+    await queryInterface.addIndex('insurance', ['user_id'], {
+      name: 'insurance_user_id_idx',
+    })
+    await queryInterface.addIndex('insurance', ['policy_number'], {
+      name: 'insurance_policy_number_idx',
       unique: true,
     })
   },
 
   down: async (queryInterface) => {
-    await queryInterface.dropTable('insurances')
+    await queryInterface.dropTable('insurance')
   },
 }

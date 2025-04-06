@@ -12,20 +12,32 @@ const Message = sequelize.define(
     content: {
       type: DataTypes.TEXT,
       allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
     },
     status: {
       type: DataTypes.ENUM('sent', 'delivered', 'read'),
       defaultValue: 'sent',
+      validate: {
+        isIn: [['sent', 'delivered', 'read']],
+      },
     },
     conversationId: {
       type: DataTypes.INTEGER,
       field: 'conversation_id',
       allowNull: false,
+      validate: {
+        isInt: true,
+      },
     },
     senderId: {
       type: DataTypes.INTEGER,
       field: 'sender_id',
       allowNull: false,
+      validate: {
+        isInt: true,
+      },
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -41,7 +53,7 @@ const Message = sequelize.define(
     },
   },
   {
-    tableName: 'messages',
+    tableName: 'message',
     timestamps: true,
     underscored: true,
     freezeTableName: true,
@@ -65,3 +77,5 @@ Message.associate = (models) => {
     as: 'Attachments',
   })
 }
+
+module.exports = Message

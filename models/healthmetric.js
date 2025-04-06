@@ -20,24 +20,48 @@ const HealthMetric = sequelize.define(
       ),
       field: 'metric_type',
       allowNull: false,
+      validate: {
+        isIn: [
+          [
+            'blood_pressure',
+            'weight',
+            'height',
+            'bmi',
+            'heart_rate',
+            'blood_glucose',
+          ],
+        ],
+      },
     },
     value: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
+      validate: {
+        isDecimal: true,
+      },
     },
     unit: {
       type: DataTypes.STRING,
       allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
     },
     recordedAt: {
       type: DataTypes.DATE,
       field: 'recorded_at',
       allowNull: false,
+      validate: {
+        isDate: true,
+      },
     },
     userId: {
       type: DataTypes.INTEGER,
       field: 'user_id',
       allowNull: false,
+      validate: {
+        isInt: true,
+      },
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -47,12 +71,17 @@ const HealthMetric = sequelize.define(
       type: DataTypes.DATE,
       field: 'updated_at',
     },
+    deletedAt: {
+      type: DataTypes.DATE,
+      field: 'deleted_at',
+    },
   },
   {
-    tableName: 'health_metrics',
+    tableName: 'health_metric',
     timestamps: true,
     underscored: true,
     freezeTableName: true,
+    paranoid: true,
   }
 )
 

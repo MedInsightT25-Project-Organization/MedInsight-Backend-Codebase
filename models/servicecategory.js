@@ -34,7 +34,7 @@ ServiceCategory.init(
   {
     sequelize,
     modelName: 'ServiceCategory',
-    tableName: 'service_categories',
+    tableName: 'service_category',
     underscored: true,
     freezeTableName: true,
     paranoid: true,

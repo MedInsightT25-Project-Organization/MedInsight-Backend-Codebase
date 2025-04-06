@@ -43,7 +43,7 @@ const Allergy = sequelize.define(
     },
   },
   {
-    tableName: 'allergies',
+    tableName: 'allergy',
     timestamps: true,
     underscored: true,
     freezeTableName: true,

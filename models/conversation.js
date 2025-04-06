@@ -35,7 +35,7 @@ const Conversation = sequelize.define(
     },
   },
   {
-    tableName: 'conversations',
+    tableName: 'conversation',
     timestamps: true,
     underscored: true,
     freezeTableName: true,
@@ -51,3 +51,5 @@ Conversation.associate = (models) => {
     foreignKey: 'conversation_id',
   })
 }
+
+module.exports = Conversation

@@ -3,9 +3,9 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-      if (process.env.NODE_ENV !== 'production') {
+    if (process.env.NODE_ENV !== 'production') {
       await queryInterface.bulkInsert(
-        'hospitals',
+        'hospital',
         [
           {
             name: 'City General Hospital',
@@ -35,7 +35,6 @@ module.exports = {
     }
   },
   down: async (queryInterface) => {
-    await queryInterface.bulkDelete('hospitals', null, {})
-    await queryInterface.dropTable('hospitals')
+    await queryInterface.bulkDelete('hospital', null, {})
   },
 }

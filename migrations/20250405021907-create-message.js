@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('messages', {
+    await queryInterface.createTable('message', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -20,7 +20,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'conversations',
+          model: 'conversation',
           key: 'id',
         },
         onDelete: 'CASCADE',
@@ -29,7 +29,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'users',
+          model: 'user',
           key: 'id',
         },
         onDelete: 'CASCADE',
@@ -48,10 +48,17 @@ module.exports = {
       },
     })
 
-    await queryInterface.addIndex('messages', ['conversation_id'])
-    await queryInterface.addIndex('messages', ['sender_id'])
+    await queryInterface.addIndex('message', ['conversation_id'], {
+      name: 'message_conversation_id_idx',
+    })
+    await queryInterface.addIndex('message', ['sender_id'], {
+      name: 'message_sender_id_idx',
+    })
+    await queryInterface.addIndex('message', ['status'], {
+      name: 'message_status_idx',
+    })
   },
   down: async (queryInterface) => {
-    await queryInterface.dropTable('messages')
+    await queryInterface.dropTable('message')
   },
 }

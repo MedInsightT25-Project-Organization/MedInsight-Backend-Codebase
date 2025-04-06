@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('service_categories', {
+    await queryInterface.createTable('service_category', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -30,13 +30,13 @@ module.exports = {
       },
     })
 
-    await queryInterface.addIndex('service_categories', ['name'], {
+    await queryInterface.addIndex('service_category', ['name'], {
       unique: true,
-      name: 'service_categories_name_unique',
+      name: 'service_category_name_unique',
     })
   },
 
   down: async (queryInterface) => {
-    await queryInterface.dropTable('service_categories')
+    await queryInterface.dropTable('service_category')
   },
 }

@@ -51,7 +51,7 @@ Hospital.init(
   {
     sequelize,
     modelName: 'Hospital',
-    tableName: 'hospitals',
+    tableName: 'hospital',
     underscored: true,
     freezeTableName: true,
     paranoid: true,
