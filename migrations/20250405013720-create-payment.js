@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('payments', {
+    await queryInterface.createTable('payment', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -28,7 +28,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'users',
+          model: 'user',
           key: 'id',
         },
         onDelete: 'CASCADE',
@@ -37,7 +37,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'appointments',
+          model: 'appointment',
           key: 'id',
         },
         onDelete: 'CASCADE',
@@ -52,14 +52,14 @@ module.exports = {
       },
     })
 
-    await queryInterface.addIndex('payments', ['patient_id'])
-    await queryInterface.addIndex('payments', ['appointment_id'])
-    await queryInterface.addIndex('payments', ['transaction_id'], {
+    await queryInterface.addIndex('payment', ['patient_id'])
+    await queryInterface.addIndex('payment', ['appointment_id'])
+    await queryInterface.addIndex('payment', ['transaction_id'], {
       unique: true,
     })
   },
 
   down: async (queryInterface) => {
-    await queryInterface.dropTable('payments')
+    await queryInterface.dropTable('payment')
   },
 }
