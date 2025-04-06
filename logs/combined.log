@@ -34,3 +34,6 @@
 {"level":"info","message":"Redis connected successfully","timestamp":"2025-04-06T02:35:52.739Z"}
 {"level":"info","message":"Database connection established successfully","timestamp":"2025-04-06T02:35:53.242Z"}
 {"level":"info","message":"Server is running on port 3000 in development mode","timestamp":"2025-04-06T02:35:53.245Z"}
+{"level":"info","message":"Redis connected successfully","timestamp":"2025-04-06T02:36:04.093Z"}
+{"level":"info","message":"Database connection established successfully","timestamp":"2025-04-06T02:36:04.486Z"}
+{"level":"info","message":"Server is running on port 3000 in development mode","timestamp":"2025-04-06T02:36:04.489Z"}
