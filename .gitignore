@@ -1,0 +1,15 @@
+# environment variables
+.env
+
+# node_modules
+node_modules
+
+
+# sql files
+*.sql
+
+# doc files
+*.docx
+*.doc
+
+
