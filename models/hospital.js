@@ -31,8 +31,12 @@ Hospital.init(
       type: DataTypes.STRING(20),
       field: 'contact_number',
     },
-    geolocation: {
-      type: DataTypes.GEOGRAPHY('POINT'),
+    latitude: {
+      type: DataTypes.DECIMAL(10, 8),
+      allowNull: false,
+    },
+    longitude: {
+      type: DataTypes.DECIMAL(11, 8),
       allowNull: false,
     },
     createdAt: {

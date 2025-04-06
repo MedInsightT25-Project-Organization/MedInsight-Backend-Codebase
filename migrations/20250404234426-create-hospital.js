@@ -32,8 +32,12 @@ module.exports = {
         type: Sequelize.STRING(20),
         allowNull: true,
       },
-      geolocation: {
-        type: Sequelize.GEOGRAPHY('POINT'),
+      latitude: {
+        type: Sequelize.DECIMAL(10, 8),
+        allowNull: false,
+      },
+      longitude: {
+        type: Sequelize.DECIMAL(11, 8),
         allowNull: false,
       },
       created_at: {
@@ -50,15 +54,14 @@ module.exports = {
       },
     })
 
-    // Add spatial index for geolocation
-    await queryInterface.addIndex('hospital', ['geolocation'], {
-      using: 'GIST',
-      name: 'idx_hospital_geolocation',
+    // Add index for location coordinates
+    await queryInterface.addIndex('hospital', ['latitude', 'longitude'], {
+      name: 'hospital_location_idx',
     })
   },
 
   down: async (queryInterface) => {
-    await queryInterface.removeIndex('hospital', 'idx_hospital_geolocation')
+    await queryInterface.removeIndex('hospital', 'hospital_location_idx')
     await queryInterface.dropTable('hospital')
   },
 }
