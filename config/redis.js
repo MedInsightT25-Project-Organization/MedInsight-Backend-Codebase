@@ -1,10 +1,13 @@
 const Redis = require('ioredis')
 const logger = require('../utils/logger')
+const env = process.env.NODE_ENV || 'development'
+const config = require('./config')[env]
+
 
 const redis = new Redis({
-  host: process.env.REDIS_HOST,
-  port: process.env.REDIS_PORT,
-  password: process.env.REDIS_PASSWORD,
+  host: config.redis.host,
+  port: config.redis.port,
+  // password: config.redis.password,
   retryStrategy: (times) => {
     const delay = Math.min(times * 50, 2000)
     return delay
