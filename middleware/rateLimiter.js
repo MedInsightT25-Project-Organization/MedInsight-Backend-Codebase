@@ -1,5 +1,4 @@
 const redis = require('../config/redis')
-const logger = require('../utils/logger')
 
 const rateLimiter = async (req, res, next) => {
   try {
@@ -13,7 +12,7 @@ const rateLimiter = async (req, res, next) => {
     const count = current ? parseInt(current) : 0
 
     if (count >= maxRequests) {
-      logger.warn(`Rate limit exceeded for IP: ${ip}`)
+      console.warn(`Rate limit exceeded for IP: ${ip}`)
       return res.status(429).json({
         error: 'Too many requests, please try again later',
       })
@@ -24,7 +23,7 @@ const rateLimiter = async (req, res, next) => {
 
     next()
   } catch (error) {
-    logger.error('Rate limiter error:', error)
+    console.error('Rate limiter error:', error)
     next() // Continue even if rate limiting fails
   }
 }

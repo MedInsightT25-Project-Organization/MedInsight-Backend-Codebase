@@ -2,9 +2,9 @@ const express = require('express')
 const cors = require('cors')
 const dotenv = require('dotenv')
 const path = require('path')
-const logger = require('./utils/logger')
 const { testConnection } = require('./config/database')
 const authRoutes = require('./routes/authRoutes')
+const logRoutes = require('./routes/logRoutes')
 
 // Load environment variables
 dotenv.config()
@@ -18,6 +18,9 @@ app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
+// Import logger after Redis is initialized
+const { logger } = require('./utils/logger')
+
 // Request logging middleware
 app.use((req, res, next) => {
   logger.info(
@@ -30,6 +33,7 @@ app.use((req, res, next) => {
 
 // Routes
 app.use('/api/auth', authRoutes)
+app.use('/api/logs', logRoutes)
 
 // Health check endpoint
 app.get('/health', (req, res) => {

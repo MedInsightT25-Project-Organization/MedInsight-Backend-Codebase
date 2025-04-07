@@ -1,5 +1,4 @@
 const { sequelize } = require('../config/database')
-const logger = require('../utils/logger')
 
 // Import all models
 const User = require('../db/models/user')
@@ -13,7 +12,7 @@ const initDatabase = async () => {
   try {
     // Sync all models with database
     await sequelize.sync({ force: process.env.NODE_ENV === 'development' })
-    logger.info('Database synchronized successfully')
+    console.log('Database synchronized successfully')
 
     // If in development, seed the database
     if (process.env.NODE_ENV === 'development') {
@@ -22,12 +21,12 @@ const initDatabase = async () => {
 
       // Run seeders
       await seedHospitals.up(sequelize.getQueryInterface(), Sequelize)
-      logger.info('Database seeded successfully')
+      console.log('Database seeded successfully')
     }
 
     process.exit(0)
   } catch (error) {
-    logger.error('Error initializing database:', error)
+    console.error('Error initializing database:', error)
     process.exit(1)
   }
 }

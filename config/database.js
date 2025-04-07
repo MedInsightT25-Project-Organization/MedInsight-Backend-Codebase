@@ -1,9 +1,7 @@
 const { Sequelize } = require('sequelize')
-const logger = require('../utils/logger')
 require('dotenv').config()
 const env = process.env.NODE_ENV || 'development'
 const config = require('../config/config')[env]
-
 
 // Create Sequelize instance
 const sequelize = new Sequelize(
@@ -14,7 +12,7 @@ const sequelize = new Sequelize(
     host: config.host,
     port: config.port || 5432,
     dialect: 'postgres',
-    logging: (msg) => logger.debug(msg),
+    logging: (msg) => console.log(msg),
     pool: {
       max: 5,
       min: 0,
@@ -33,9 +31,9 @@ const sequelize = new Sequelize(
 const testConnection = async () => {
   try {
     await sequelize.authenticate()
-    logger.info('Database connection established successfully')
+    console.log('Database connection established successfully')
   } catch (error) {
-    logger.error('Unable to connect to the database:', error)
+    console.error('Unable to connect to the database:', error)
     process.exit(1)
   }
 }

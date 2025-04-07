@@ -1,9 +1,9 @@
-const { User } = require('../db/models/user')
+const User = require('../db/models/user')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const { OAuth2Client } = require('google-auth-library')
-const redis = require('../config/redis')
-const logger = require('../utils/logger')
+const { cacheClient } = require('../config/redis')
+const { logger } = require('../utils/logger')
 const {
   validateRegistration,
   validateLogin,
@@ -51,7 +51,7 @@ class AuthController {
       const refreshToken = generateRefreshToken(user)
 
       // Store refresh token in Redis
-      await redis.set(
+      await cacheClient.set(
         `refresh_token:${user.id}`,
         refreshToken,
         'EX',
@@ -113,7 +113,7 @@ class AuthController {
       const refreshToken = generateRefreshToken(user)
 
       // Store refresh token in Redis
-      await redis.set(
+      await cacheClient.set(
         `refresh_token:${user.id}`,
         refreshToken,
         'EX',
@@ -191,7 +191,7 @@ class AuthController {
       const refreshToken = generateRefreshToken(user)
 
       // Store refresh token in Redis
-      await redis.set(
+      await cacheClient.set(
         `refresh_token:${user.id}`,
         refreshToken,
         'EX',
@@ -263,7 +263,7 @@ class AuthController {
       const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET)
 
       // Check if refresh token exists in Redis
-      const storedToken = await redis.get(`refresh_token:${decoded.id}`)
+      const storedToken = await cacheClient.get(`refresh_token:${decoded.id}`)
       if (!storedToken || storedToken !== refreshToken) {
         return res.status(401).json({ error: 'Invalid refresh token' })
       }
@@ -279,7 +279,7 @@ class AuthController {
       const newRefreshToken = generateRefreshToken(user)
 
       // Update refresh token in Redis
-      await redis.set(
+      await cacheClient.set(
         `refresh_token:${user.id}`,
         newRefreshToken,
         'EX',
@@ -304,7 +304,7 @@ class AuthController {
       const { refreshToken } = req.body
       if (refreshToken) {
         const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET)
-        await redis.del(`refresh_token:${decoded.id}`)
+        await cacheClient.del(`refresh_token:${decoded.id}`)
       }
 
       logger.info(`User logged out: ${req.user.id}`)
@@ -331,7 +331,7 @@ class AuthController {
       })
 
       // Store reset token in Redis
-      await redis.set(`reset_token:${user.id}`, resetToken, 'EX', 3600)
+      await cacheClient.set(`reset_token:${user.id}`, resetToken, 'EX', 3600)
 
       // Send reset email
       await sendPasswordResetEmail(user.email, resetToken)
@@ -354,7 +354,7 @@ class AuthController {
       const decoded = jwt.verify(token, process.env.JWT_SECRET)
 
       // Check if token exists in Redis
-      const storedToken = await redis.get(`reset_token:${decoded.id}`)
+      const storedToken = await cacheClient.get(`reset_token:${decoded.id}`)
       if (!storedToken || storedToken !== token) {
         return res.status(401).json({ error: 'Invalid or expired reset token' })
       }
@@ -367,7 +367,7 @@ class AuthController {
       )
 
       // Delete reset token from Redis
-      await redis.del(`reset_token:${decoded.id}`)
+      await cacheClient.del(`reset_token:${decoded.id}`)
 
       logger.info(`Password reset successful for user: ${decoded.id}`)
 
