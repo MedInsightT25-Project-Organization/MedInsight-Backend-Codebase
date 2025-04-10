@@ -2,7 +2,7 @@ const Joi = require('joi')
 
 const validateRegistration = (data) => {
   const schema = Joi.object({
-    email: Joi.string().email().required(),
+    email: Joi.string().email({ tlds: { allow: ['com'] } }).required(),
     password: Joi.string()
       .min(8)
       .pattern(

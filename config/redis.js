@@ -20,4 +20,4 @@ redis.on('error', (error) => {
   console.error('Redis connection error:', error)
 })
 
-module.exports = redis
+module.exports = { cacheClient: redis }

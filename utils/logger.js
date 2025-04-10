@@ -1,11 +1,10 @@
 const winston = require('winston')
-const redis = require('../config/redis')
+const { cacheClient } = require('../config/redis')
 
 // Custom Redis transport for Winston
 class RedisTransport extends winston.Transport {
   constructor(opts) {
     super(opts)
-    this.redis = redis
     this.key = opts.key || 'logs'
     this.maxLogs = opts.maxLogs || 10000 // Maximum number of logs to keep
     this.redisAvailable = true
@@ -26,11 +25,11 @@ class RedisTransport extends winston.Transport {
     // Only try to log to Redis if it's available
     if (this.redisAvailable) {
       // Add to the beginning of the list (newest first)
-      this.redis
+      cacheClient
         .lpush(this.key, logEntry)
         .then(() => {
           // Trim the list to maxLogs
-          return this.redis.ltrim(this.key, 0, this.maxLogs - 1)
+          return cacheClient.ltrim(this.key, 0, this.maxLogs - 1)
         })
         .then(() => {
           callback()
