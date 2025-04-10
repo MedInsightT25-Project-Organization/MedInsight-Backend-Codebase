@@ -1,5 +1,6 @@
 const redis = require('../config/redis')
 const { RateLimitError } = require('../utils/errors')
+require('dotenv').config()
 
 const rateLimiter = async (req, res, next) => {
   try {
