@@ -1,3 +1,4 @@
+require('dotenv').config
 const User = require('../db/models/user')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
@@ -14,7 +15,6 @@ const {
   sendLoginNotificationEmail,
 } = require('../utils/email')
 const { generateToken, generateRefreshToken } = require('../utils/jwt')
-require('dotenv').config
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
 
