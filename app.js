@@ -5,6 +5,9 @@ const path = require('path')
 const { testConnection } = require('./config/database')
 const authRoutes = require('./routes/authRoutes')
 const logRoutes = require('./routes/logRoutes')
+const { errorHandler, errorTypeHandler } = require('./middleware/errorHandler')
+const { NotFoundError } = require('./utils/errors')
+const { logger } = require('./utils/logger')
 
 // Load environment variables
 dotenv.config()
@@ -50,21 +53,29 @@ app.get('/', (req, res) => {
   })
 })
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-  logger.error('Unhandled error:', err)
-  res.status(500).json({
-    error: 'Internal server error',
-    message: process.env.NODE_ENV === 'development' ? err.message : undefined,
-  })
+// Catch-all route for undefined routes
+app.all('*', (req, res, next) => {
+  next(new NotFoundError(`Can't find ${req.originalUrl} on this server!`))
 })
 
-// 404 handler
-app.use((req, res) => {
-  res.status(404).json({
-    error: 'Not found',
-    message: 'The requested resource was not found',
-  })
+// Global error handling
+app.use((err, req, res, next) => {
+  err = errorTypeHandler(err)
+  errorHandler(err, req, res, next)
+})
+
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (err) => {
+  logger.error('UNHANDLED REJECTION! 💥 Shutting down...')
+  logger.error(err.name, err.message)
+  process.exit(1)
+})
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (err) => {
+  logger.error('UNCAUGHT EXCEPTION! 💥 Shutting down...')
+  logger.error(err.name, err.message)
+  process.exit(1)
 })
 
 // Start server

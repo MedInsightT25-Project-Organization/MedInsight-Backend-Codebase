@@ -13,9 +13,12 @@ const validateRegistration = (data) => {
         'string.pattern.base':
           'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character',
       }),
-    role: Joi.string().valid('patient', 'practitioner', 'admin').required(),
-    firstName: Joi.string().required(),
-    lastName: Joi.string().required(),
+    confirmPassword: Joi.string()
+      .valid(Joi.ref('password'))
+      .required()
+      .messages({
+        'any.only': 'Passwords do not match',
+      }),
   })
 
   return schema.validate(data)

@@ -1,5 +1,6 @@
 const nodemailer = require('nodemailer')
 const logger = require('./logger')
+require('dotenv').config
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
@@ -11,14 +12,14 @@ const transporter = nodemailer.createTransport({
   },
 })
 
-const sendWelcomeEmail = async (email, firstName) => {
+const sendWelcomeEmail = async (email) => {
   try {
     const mailOptions = {
       from: process.env.SMTP_USER,
       to: email,
       subject: 'Welcome to MedInsight',
       html: `
-        <h1>Welcome to MedInsight, ${firstName}!</h1>
+        <h1>Welcome to MedInsight, ${email}h1>
         <p>Thank you for registering with MedInsight. We're excited to have you on board.</p>
         <p>With your account, you can:</p>
         <ul>
