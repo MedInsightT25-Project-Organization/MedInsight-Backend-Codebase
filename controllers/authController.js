@@ -15,6 +15,7 @@ const {
   sendLoginNotificationEmail,
 } = require('../utils/email')
 const { generateToken, generateRefreshToken } = require('../utils/jwt')
+const { ValidationError, AuthenticationError } = require('../utils/errors')
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
 
@@ -24,7 +25,7 @@ class AuthController {
     try {
       const { error } = validateRegistration(req.body)
       if (error) {
-        return res.status(400).json({ error: error.details[0].message })
+        throw new ValidationError(error.details[0].message)
       }
 
       const { email, password } = req.body
@@ -32,7 +33,7 @@ class AuthController {
       // Check if user already exists
       const existingUser = await User.findOne({ where: { email } })
       if (existingUser) {
-        return res.status(400).json({ error: 'Email already registered' })
+        throw new ValidationError('Email already registered')
       }
 
       // Hash password
@@ -79,7 +80,7 @@ class AuthController {
       })
     } catch (error) {
       logger.error('Registration error:', error)
-      res.status(500).json({ error: 'Internal server error' })
+      throw new Error('Internal server error')
     }
   }
 
@@ -88,7 +89,7 @@ class AuthController {
     try {
       const { error } = validateRegistration(req.body)
       if (error) {
-        return res.status(400).json({ error: error.details[0].message })
+        throw new ValidationError(error.details[0].message)
       }
 
       const { email, password } = req.body
@@ -96,7 +97,7 @@ class AuthController {
       // Check if user already exists
       const existingUser = await User.findOne({ where: { email } })
       if (existingUser) {
-        return res.status(400).json({ error: 'Email already registered' })
+        throw new ValidationError('Email already registered')
       }
 
       // Hash password
@@ -143,7 +144,7 @@ class AuthController {
       })
     } catch (error) {
       logger.error('Registration error:', error)
-      res.status(500).json({ error: 'Internal server error' })
+      throw new Error('Internal server error')
     }
   }
 
@@ -152,7 +153,7 @@ class AuthController {
     try {
       const { error } = validateRegistration(req.body)
       if (error) {
-        return res.status(400).json({ error: error.details[0].message })
+        throw new ValidationError(error.details[0].message)
       }
 
       const { email, password } = req.body
@@ -160,7 +161,7 @@ class AuthController {
       // Check if user already exists
       const existingUser = await User.findOne({ where: { email } })
       if (existingUser) {
-        return res.status(400).json({ error: 'Email already registered' })
+        throw new ValidationError('Email already registered')
       }
 
       // Hash password
@@ -207,7 +208,7 @@ class AuthController {
       })
     } catch (error) {
       logger.error('Registration error:', error)
-      res.status(500).json({ error: 'Internal server error' })
+      throw new Error('Internal server error')
     }
   }
 
@@ -216,7 +217,7 @@ class AuthController {
     try {
       const { error } = validateLogin(req.body)
       if (error) {
-        return res.status(400).json({ error: error.details[0].message })
+        throw new ValidationError(error.details[0].message)
       }
 
       const { email, password } = req.body
@@ -224,13 +225,13 @@ class AuthController {
       // Find user
       const user = await User.findOne({ where: { email } })
       if (!user) {
-        return res.status(401).json({ error: 'Invalid credentials' })
+        throw new AuthenticationError('Invalid credentials')
       }
 
       // Check password
       const isValidPassword = await bcrypt.compare(password, user.passwordHash)
       if (!isValidPassword) {
-        return res.status(401).json({ error: 'Invalid credentials' })
+        throw new AuthenticationError('Invalid credentials')
       }
 
       // Generate tokens
@@ -278,7 +279,7 @@ class AuthController {
       })
     } catch (error) {
       logger.error('Login error:', error)
-      res.status(500).json({ error: 'Internal server error' })
+      throw new Error('Internal server error')
     }
   }
 
@@ -363,7 +364,7 @@ class AuthController {
       })
     } catch (error) {
       logger.error('Google login error:', error)
-      res.status(500).json({ error: 'Internal server error' })
+      throw new Error('Internal server error')
     }
   }
 
@@ -373,7 +374,7 @@ class AuthController {
       const { refreshToken } = req.body
 
       if (!refreshToken) {
-        return res.status(400).json({ error: 'Refresh token is required' })
+        throw new ValidationError('Refresh token is required')
       }
 
       // Verify refresh token
@@ -382,13 +383,13 @@ class AuthController {
       // Get user
       const user = await User.findByPk(decoded.id)
       if (!user) {
-        return res.status(401).json({ error: 'User not found' })
+        throw new AuthenticationError('User not found')
       }
 
       // Check if refresh token exists in Redis
       const storedToken = await cacheClient.get(`refresh_token:${user.id}`)
       if (!storedToken || storedToken !== refreshToken) {
-        return res.status(401).json({ error: 'Invalid refresh token' })
+        throw new AuthenticationError('Invalid refresh token')
       }
 
       // Generate new tokens
@@ -410,7 +411,7 @@ class AuthController {
       })
     } catch (error) {
       logger.error('Token refresh error:', error)
-      res.status(401).json({ error: 'Invalid refresh token' })
+      throw new AuthenticationError('Invalid refresh token')
     }
   }
 
@@ -427,7 +428,7 @@ class AuthController {
       res.json({ message: 'Logged out successfully' })
     } catch (error) {
       logger.error('Logout error:', error)
-      res.status(500).json({ error: 'Internal server error' })
+      throw new Error('Internal server error')
     }
   }
 
@@ -459,7 +460,7 @@ class AuthController {
       res.json({ message: 'Password reset email sent if account exists' })
     } catch (error) {
       logger.error('Forgot password error:', error)
-      res.status(500).json({ error: 'Failed to process request' })
+      throw new Error('Failed to process request')
     }
   }
 
@@ -480,13 +481,13 @@ class AuthController {
       // Get user
       const user = await User.findByPk(decoded.id)
       if (!user) {
-        return res.status(401).json({ error: 'User not found' })
+        throw new AuthenticationError('User not found')
       }
 
       // Check if token exists in Redis
       const storedToken = await cacheClient.get(`reset_token:${decoded.id}`)
       if (!storedToken || storedToken !== token) {
-        return res.status(401).json({ error: 'Invalid or expired reset token' })
+        throw new AuthenticationError('Invalid or expired reset token')
       }
 
       // Hash new password
@@ -503,7 +504,7 @@ class AuthController {
       res.json({ message: 'Password reset successfully' })
     } catch (error) {
       logger.error('Reset password error:', error)
-      res.status(401).json({ error: 'Invalid or expired reset token' })
+      throw new AuthenticationError('Invalid or expired reset token')
     }
   }
 
@@ -523,7 +524,7 @@ class AuthController {
       })
     } catch (error) {
       logger.error('Get session error:', error)
-      res.status(500).json({ error: 'Internal server error' })
+      throw new Error('Internal server error')
     }
   }
 }

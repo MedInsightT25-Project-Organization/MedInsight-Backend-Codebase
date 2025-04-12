@@ -51,10 +51,6 @@ const User = sequelize.define(
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
-    isTwoFactorEnabled: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
-    },
     deletedAt: {
       type: DataTypes.DATE,
       allowNull: true,
@@ -64,7 +60,6 @@ const User = sequelize.define(
       type: DataTypes.DATE,
       allowNull: false,
       defaultValue: DataTypes.NOW,
-
     },
     updatedAt: {
       type: DataTypes.DATE,
