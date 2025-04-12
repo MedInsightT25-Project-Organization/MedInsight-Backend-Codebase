@@ -1,8 +1,8 @@
 const { DataTypes } = require('sequelize')
 const sequelize = require('../../config/database')
 
-const Cart = sequelize.define(
-  'cart',
+const Conversation = sequelize.define(
+  'conversation',
   {
     id: {
       type: DataTypes.INTEGER,
@@ -21,7 +21,7 @@ const Cart = sequelize.define(
     },
   },
   {
-    tableName: 'carts',
+    tableName: 'conversations',
     underscored: true,
     timestamps: true,
     createdAt: 'created_at',
@@ -30,24 +30,24 @@ const Cart = sequelize.define(
 )
 
 // Relationships
-Cart.associate = (models) => {
-  // Cart belongs to a Patient (User)
-  Cart.belongsTo(models.User, {
+Conversation.associate = (models) => {
+  // Conversation belongs to a Patient (User)
+  Conversation.belongsTo(models.User, {
     foreignKey: 'patient_id',
     as: 'patient',
   })
 
-  // Cart belongs to a Hospital
-  Cart.belongsTo(models.Hospital, {
+  // Conversation belongs to a Hospital
+  Conversation.belongsTo(models.Hospital, {
     foreignKey: 'hospital_id',
     as: 'hospital',
   })
 
-  // Cart has many CartItems (to be defined next)
-  Cart.hasMany(models.CartItem, {
-    foreignKey: 'cart_id',
-    as: 'items',
+  // Conversation has many Messages
+  Conversation.hasMany(models.Message, {
+    foreignKey: 'conversation_id',
+    as: 'messages',
   })
 }
 
-module.exports = Cart
+module.exports = Conversation

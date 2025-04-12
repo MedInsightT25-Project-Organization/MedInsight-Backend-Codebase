@@ -1,9 +1,8 @@
-const { Model, DataTypes } = require('sequelize')
-const { sequelize } = require('../../config/database')
+const { DataTypes } = require('sequelize')
+const sequelize = require('../../config/database')
 
-class Service extends Model {}
-
-Service.init(
+const Service = sequelize.define(
+  'service',
   {
     id: {
       type: DataTypes.INTEGER,
@@ -17,12 +16,8 @@ Service.init(
     description: {
       type: DataTypes.TEXT,
     },
-    cost: {
+    price: {
       type: DataTypes.DECIMAL(10, 2),
-      allowNull: false,
-    },
-    duration: {
-      type: DataTypes.INTEGER, // in minutes
       allowNull: false,
     },
     hospitalId: {
@@ -30,50 +25,26 @@ Service.init(
       field: 'hospital_id',
       allowNull: false,
     },
-    categoryId: {
-      type: DataTypes.INTEGER,
-      field: 'category_id',
-      allowNull: false,
-    },
-    createdAt: {
-      type: DataTypes.DATE,
-      field: 'created_at',
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-      field: 'updated_at',
-    },
-    deletedAt: {
-      type: DataTypes.DATE,
-      field: 'deleted_at',
-    },
   },
   {
-    sequelize,
-    modelName: 'Service',
-    tableName: 'service',
+    tableName: 'services',
     underscored: true,
-    freezeTableName: true,
-    paranoid: true,
     timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
   }
 )
 
+// Relationships
 Service.associate = (models) => {
+  // Service belongs to a Hospital
   Service.belongsTo(models.Hospital, {
     foreignKey: 'hospital_id',
-    as: 'Hospital',
+    as: 'hospital',
   })
 
-  Service.belongsTo(models.ServiceCategory, {
-    foreignKey: 'category_id',
-    as: 'Category',
-  })
-
-  Service.belongsToMany(models.Appointment, {
-    through: 'appointment_service',
-    foreignKey: 'service_id',
-  })
+  // Service can be in many CartItems (define later)
+  Service.hasMany(models.CartItem, { foreignKey: 'service_id' })
 }
 
 module.exports = Service

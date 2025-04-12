@@ -1,8 +1,8 @@
-const { Model, DataTypes } = require('sequelize')
-const { sequelize } = require('../../config/database')
+const { DataTypes } = require('sequelize')
+const sequelize = require('../../config/database')
 
 const Payment = sequelize.define(
-  'Payment',
+  'payment',
   {
     id: {
       type: DataTypes.INTEGER,
@@ -13,56 +13,57 @@ const Payment = sequelize.define(
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
     },
-    paymentMethod: {
-      type: DataTypes.ENUM('credit_card', 'upi', 'insurance', 'cash'),
-      field: 'payment_method',
-      allowNull: false,
-    },
     status: {
-      type: DataTypes.ENUM('pending', 'completed', 'failed', 'refunded'),
+      type: DataTypes.ENUM('pending', 'completed', 'failed'),
       defaultValue: 'pending',
     },
     transactionId: {
       type: DataTypes.STRING,
       field: 'transaction_id',
-      unique: true,
-    },
-    patientId: {
-      type: DataTypes.INTEGER,
-      field: 'patient_id',
-      allowNull: false,
     },
     appointmentId: {
       type: DataTypes.INTEGER,
       field: 'appointment_id',
       allowNull: false,
     },
-    createdAt: {
-      type: DataTypes.DATE,
-      field: 'created_at',
+    userId: {
+      type: DataTypes.INTEGER,
+      field: 'user_id',
+      allowNull: false,
     },
-    updatedAt: {
-      type: DataTypes.DATE,
-      field: 'updated_at',
+    hospitalId: {
+      type: DataTypes.INTEGER,
+      field: 'hospital_id',
+      allowNull: false,
     },
   },
   {
     tableName: 'payments',
-    timestamps: true,
     underscored: true,
-    freezeTableName: true,
+    timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
   }
 )
 
+// Relationships
 Payment.associate = (models) => {
-  Payment.belongsTo(models.User, {
-    foreignKey: 'patient_id',
-    as: 'Patient',
-  })
-
+  // Payment belongs to an Appointment
   Payment.belongsTo(models.Appointment, {
     foreignKey: 'appointment_id',
-    as: 'Appointment',
+    as: 'appointment',
+  })
+
+  // Payment belongs to a Patient (User)
+  Payment.belongsTo(models.User, {
+    foreignKey: 'user_id',
+    as: 'patient',
+  })
+
+  // Payment belongs to a Hospital
+  Payment.belongsTo(models.Hospital, {
+    foreignKey: 'hospital_id',
+    as: 'hospital',
   })
 }
 

@@ -1,6 +1,5 @@
-// models/user.js
-const { Model, DataTypes } = require('sequelize')
-const { sequelize } = require('../../config/database')
+const { DataTypes } = require('sequelize')
+const sequelize = require('../../config/database')
 
 const User = sequelize.define(
   'user',
@@ -9,11 +8,6 @@ const User = sequelize.define(
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
-    },
-    fullName: {
-      type: DataTypes.STRING,
-      allowNull: true,
-      field: 'full_name',
     },
     email: {
       type: DataTypes.STRING,
@@ -25,93 +19,43 @@ const User = sequelize.define(
     },
     passwordHash: {
       type: DataTypes.STRING,
-      allowNull: false,
       field: 'password_hash',
-    },
-    phoneNumber: {
-      type: DataTypes.STRING(20),
-      field: 'phone_number',
+      allowNull: false,
     },
     role: {
-      type: DataTypes.ENUM('patient', 'practitioner', 'admin'),
+      type: DataTypes.ENUM('patient', 'hospital_admin', 'super_admin'),
       defaultValue: 'patient',
-    },
-    profilePicture: {
-      type: DataTypes.STRING,
-      field: 'profile_picture',
-    },
-    createdAt: {
-      type: DataTypes.DATE,
-      field: 'created_at',
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-      field: 'updated_at',
-    },
-    deletedAt: {
-      type: DataTypes.DATE,
-      field: 'deleted_at',
     },
   },
   {
-    tableName: 'user',
-    timestamps: true,
+    tableName: 'users',
     underscored: true,
-    freezeTableName: true,
+    timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
     paranoid: true,
+    deletedAt: 'deleted_at',
   }
 )
 
+// Define relationships
 User.associate = (models) => {
-  User.hasMany(models.Appointment, {
-    as: 'PatientAppointments',
-    foreignKey: 'patient_id',
-  })
+  // 1:1 Relationships
+  User.hasOne(models.UserProfile, { foreignKey: 'user_id' })
+  User.hasOne(models.UserPreference, { foreignKey: 'user_id' })
 
-  User.hasMany(models.Appointment, {
-    as: 'PractitionerAppointments',
-    foreignKey: 'practitioner_id',
-  })
+  // 1:N Relationships
+  User.hasMany(models.Appointment, { foreignKey: 'patient_id' })
+  User.hasMany(models.Message, { foreignKey: 'sender_id' })
+  User.hasMany(models.Notification, { foreignKey: 'user_id' })
+  User.hasMany(models.Prescription, { foreignKey: 'patient_id' })
+  User.hasMany(models.Allergy, { foreignKey: 'patient_id' })
+  User.hasMany(models.PatientVitals, { foreignKey: 'patient_id' })
+  User.hasMany(models.Rating, { foreignKey: 'patient_id' })
+  User.hasMany(models.ResearchRequest, { foreignKey: 'user_id' })
 
-  User.hasMany(models.MedicalRecord, {
-    foreignKey: 'patient_id',
-  })
-
-  User.hasMany(models.Rating, {
-    foreignKey: 'patient_id',
-  })
-
-  User.hasOne(models.Cart, {
-    foreignKey: 'user_id',
-  })
-
-  User.hasMany(models.Notification, {
-    foreignKey: 'user_id',
-  })
-
-  User.hasMany(models.Message, {
-    foreignKey: 'sender_id',
-  })
-
-  User.hasMany(models.Participant, {
-    foreignKey: 'user_id',
-  })
-
-  User.hasOne(models.Insurance, {
-    foreignKey: 'user_id',
-  })
-
-  User.hasMany(models.Allergy, {
-    foreignKey: 'user_id',
-  })
-
-  User.hasMany(models.HealthMetric, {
-    foreignKey: 'user_id',
-  })
-
-  User.hasOne(models.UserSetting, {
-    foreignKey: 'user_id',
-  })
+  // Hospital Admin Relationship
+  User.hasMany(models.Hospital, { foreignKey: 'created_by' })
 }
 
 module.exports = User

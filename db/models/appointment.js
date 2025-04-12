@@ -1,39 +1,26 @@
-const { Model, DataTypes } = require('sequelize')
-const { sequelize } = require('../../config/database')
+const { DataTypes } = require('sequelize')
+const sequelize = require('../../config/database')
 
-class Appointment extends Model {}
-
-Appointment.init(
+const Appointment = sequelize.define(
+  'appointment',
   {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    appointmentDate: {
-      type: DataTypes.DATE,
-      field: 'appointment_date',
-      allowNull: false,
-    },
-    type: {
-      type: DataTypes.ENUM('consultation', 'test', 'follow-up', 'surgery'),
-      allowNull: false,
-    },
     status: {
-      type: DataTypes.ENUM('pending', 'confirmed', 'completed', 'cancelled'),
+      type: DataTypes.ENUM('pending', 'confirmed', 'canceled'),
       defaultValue: 'pending',
     },
-    notes: {
-      type: DataTypes.TEXT,
+    scheduledTime: {
+      type: DataTypes.DATE,
+      field: 'scheduled_time',
+      allowNull: false,
     },
     patientId: {
       type: DataTypes.INTEGER,
       field: 'patient_id',
-      allowNull: false,
-    },
-    practitionerId: {
-      type: DataTypes.INTEGER,
-      field: 'practitioner_id',
       allowNull: false,
     },
     hospitalId: {
@@ -41,49 +28,43 @@ Appointment.init(
       field: 'hospital_id',
       allowNull: false,
     },
-    createdAt: {
-      type: DataTypes.DATE,
-      field: 'created_at',
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-      field: 'updated_at',
-    },
-    deletedAt: {
-      type: DataTypes.DATE,
-      field: 'deleted_at',
+    serviceId: {
+      type: DataTypes.INTEGER,
+      field: 'service_id',
+      allowNull: true,
     },
   },
   {
-    sequelize,
-    modelName: 'Appointment',
-    tableName: 'appointment',
+    tableName: 'appointments',
     underscored: true,
-    freezeTableName: true,
-    paranoid: true,
     timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
   }
 )
 
+// Relationships
 Appointment.associate = (models) => {
+  // Appointment belongs to a Patient (User)
   Appointment.belongsTo(models.User, {
     foreignKey: 'patient_id',
-    as: 'Patient',
+    as: 'patient',
   })
 
-  Appointment.belongsTo(models.User, {
-    foreignKey: 'practitioner_id',
-    as: 'Practitioner',
-  })
-
+  // Appointment belongs to a Hospital
   Appointment.belongsTo(models.Hospital, {
     foreignKey: 'hospital_id',
+    as: 'hospital',
   })
 
-  Appointment.belongsToMany(models.Service, {
-    through: 'appointment_service',
-    foreignKey: 'appointment_id',
+  // Appointment optionally belongs to a Service
+  Appointment.belongsTo(models.Service, {
+    foreignKey: 'service_id',
+    as: 'service',
   })
+
+  // Appointment has one Payment (define later)
+  Appointment.hasOne(models.Payment, { foreignKey: 'appointment_id' })
 }
 
 module.exports = Appointment

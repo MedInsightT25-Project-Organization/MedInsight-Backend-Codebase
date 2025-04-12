@@ -1,8 +1,8 @@
-const { Model, DataTypes } = require('sequelize')
-const { sequelize } = require('../../config/database')
+const { DataTypes } = require('sequelize')
+const sequelize = require('../../config/database')
 
 const Message = sequelize.define(
-  'Message',
+  'message',
   {
     id: {
       type: DataTypes.INTEGER,
@@ -12,69 +12,47 @@ const Message = sequelize.define(
     content: {
       type: DataTypes.TEXT,
       allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
     },
-    status: {
-      type: DataTypes.ENUM('sent', 'delivered', 'read'),
-      defaultValue: 'sent',
-      validate: {
-        isIn: [['sent', 'delivered', 'read']],
-      },
+    sentAt: {
+      type: DataTypes.DATE,
+      field: 'sent_at',
     },
     conversationId: {
       type: DataTypes.INTEGER,
       field: 'conversation_id',
       allowNull: false,
-      validate: {
-        isInt: true,
-      },
     },
     senderId: {
       type: DataTypes.INTEGER,
       field: 'sender_id',
       allowNull: false,
-      validate: {
-        isInt: true,
-      },
-    },
-    createdAt: {
-      type: DataTypes.DATE,
-      field: 'created_at',
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-      field: 'updated_at',
-    },
-    deletedAt: {
-      type: DataTypes.DATE,
-      field: 'deleted_at',
     },
   },
   {
-    tableName: 'message',
-    timestamps: true,
+    tableName: 'messages',
     underscored: true,
-    freezeTableName: true,
-    paranoid: true,
+    timestamps: false, // Uses sent_at instead of default timestamps
   }
 )
 
+// Relationships
 Message.associate = (models) => {
+  // Message belongs to a Conversation
   Message.belongsTo(models.Conversation, {
     foreignKey: 'conversation_id',
-    as: 'Conversation',
+    as: 'conversation',
   })
 
+  // Message belongs to a Sender (User)
   Message.belongsTo(models.User, {
     foreignKey: 'sender_id',
-    as: 'Sender',
+    as: 'sender',
   })
 
-  Message.hasMany(models.Attachment, {
+  // Message can have attachments
+  Message.hasMany(models.ChatAttachment, {
     foreignKey: 'message_id',
-    as: 'Attachments',
+    as: 'attachments',
   })
 }
 

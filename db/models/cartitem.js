@@ -1,13 +1,24 @@
-const { Model, DataTypes } = require('sequelize')
-const { sequelize } = require('../../config/database')
+const { DataTypes } = require('sequelize')
+const sequelize = require('../../config/database')
 
 const CartItem = sequelize.define(
-  'CartItem',
+  'cart_item',
   {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
+    },
+    quantity: {
+      type: DataTypes.INTEGER,
+      defaultValue: 1,
+      validate: {
+        min: 1,
+      },
+    },
+    price: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
     },
     cartId: {
       type: DataTypes.INTEGER,
@@ -19,58 +30,28 @@ const CartItem = sequelize.define(
       field: 'service_id',
       allowNull: false,
     },
-    hospitalId: {
-      type: DataTypes.INTEGER,
-      field: 'hospital_id',
-      allowNull: false,
-    },
-    quantity: {
-      type: DataTypes.INTEGER,
-      defaultValue: 1,
-      validate: {
-        min: 1,
-      },
-    },
-    scheduledDate: {
-      type: DataTypes.DATE,
-      field: 'scheduled_date',
-    },
-    createdAt: {
-      type: DataTypes.DATE,
-      field: 'created_at',
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-      field: 'updated_at',
-    },
-    deletedAt: {
-      type: DataTypes.DATE,
-      field: 'deleted_at',
-    },
   },
   {
-    tableName: 'cart_item',
-    timestamps: true,
+    tableName: 'cart_items',
     underscored: true,
-    freezeTableName: true,
-    paranoid: true,
+    timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
   }
 )
 
+// Relationships
 CartItem.associate = (models) => {
+  // CartItem belongs to a Cart
   CartItem.belongsTo(models.Cart, {
     foreignKey: 'cart_id',
-    as: 'Cart',
+    as: 'cart',
   })
 
+  // CartItem belongs to a Service
   CartItem.belongsTo(models.Service, {
     foreignKey: 'service_id',
-    as: 'Service',
-  })
-
-  CartItem.belongsTo(models.Hospital, {
-    foreignKey: 'hospital_id',
-    as: 'Hospital',
+    as: 'service',
   })
 }
 

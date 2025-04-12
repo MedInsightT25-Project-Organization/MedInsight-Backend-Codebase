@@ -1,9 +1,8 @@
-const { Model, DataTypes } = require('sequelize')
-const { sequelize } = require('../../config/database')
+const { DataTypes } = require('sequelize')
+const sequelize = require('../../config/database')
 
-class Hospital extends Model {}
-
-Hospital.init(
+const Hospital = sequelize.define(
+  'hospital',
   {
     id: {
       type: DataTypes.INTEGER,
@@ -13,66 +12,45 @@ Hospital.init(
     name: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
     },
-    address: {
-      type: DataTypes.TEXT,
+    location: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
-    city: {
-      type: DataTypes.STRING(100),
+    contactEmail: {
+      type: DataTypes.STRING,
+      field: 'contact_email',
+      validate: {
+        isEmail: true,
+      },
     },
-    state: {
-      type: DataTypes.STRING(100),
-    },
-    country: {
-      type: DataTypes.STRING(100),
-    },
-    contactNumber: {
-      type: DataTypes.STRING(20),
-      field: 'contact_number',
-    },
-    latitude: {
-      type: DataTypes.DECIMAL(10, 8),
+    createdBy: {
+      type: DataTypes.INTEGER,
+      field: 'created_by',
       allowNull: false,
-    },
-    longitude: {
-      type: DataTypes.DECIMAL(11, 8),
-      allowNull: false,
-    },
-    createdAt: {
-      type: DataTypes.DATE,
-      field: 'created_at',
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-      field: 'updated_at',
-    },
-    deletedAt: {
-      type: DataTypes.DATE,
-      field: 'deleted_at',
     },
   },
   {
-    sequelize,
-    modelName: 'Hospital',
-    tableName: 'hospital',
+    tableName: 'hospitals',
     underscored: true,
-    freezeTableName: true,
-    paranoid: true,
     timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
   }
 )
 
+// Relationships
 Hospital.associate = (models) => {
-  Hospital.hasMany(models.Department, {
-    foreignKey: 'hospital_id',
+  // Hospital belongs to a User (hospital_admin)
+  Hospital.belongsTo(models.User, {
+    foreignKey: 'created_by',
+    as: 'admin',
   })
-  Hospital.hasMany(models.Appointment, {
-    foreignKey: 'hospital_id',
-  })
-  Hospital.hasMany(models.Service, {
-    foreignKey: 'hospital_id',
-  })
+
+  // Hospital has many Services/Appointments (define later)
+  Hospital.hasMany(models.Service, { foreignKey: 'hospital_id' })
+  Hospital.hasMany(models.Appointment, { foreignKey: 'hospital_id' })
 }
 
 module.exports = Hospital

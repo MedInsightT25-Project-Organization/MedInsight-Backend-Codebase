@@ -1,31 +1,33 @@
 const { DataTypes } = require('sequelize')
 const sequelize = require('../../config/database')
 
-const Notification = sequelize.define(
-  'notification',
+const UserPreference = sequelize.define(
+  'user_preference',
   {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    message: {
-      type: DataTypes.TEXT,
+    language: {
+      type: DataTypes.STRING,
+      defaultValue: 'en',
       allowNull: false,
     },
-    isRead: {
+    darkMode: {
       type: DataTypes.BOOLEAN,
-      field: 'is_read',
+      field: 'dark_mode',
       defaultValue: false,
     },
     userId: {
       type: DataTypes.INTEGER,
       field: 'user_id',
       allowNull: false,
+      unique: true, // Enforces 1:1 relationship
     },
   },
   {
-    tableName: 'notifications',
+    tableName: 'user_preferences',
     underscored: true,
     timestamps: true,
     createdAt: 'created_at',
@@ -34,12 +36,12 @@ const Notification = sequelize.define(
 )
 
 // Relationships
-Notification.associate = (models) => {
-  // Notification belongs to a User
-  Notification.belongsTo(models.User, {
+UserPreference.associate = (models) => {
+  // Preference belongs to a User (1:1)
+  UserPreference.belongsTo(models.User, {
     foreignKey: 'user_id',
     as: 'user',
   })
 }
 
-module.exports = Notification
+module.exports = UserPreference

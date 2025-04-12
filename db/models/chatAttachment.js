@@ -1,33 +1,31 @@
 const { DataTypes } = require('sequelize')
 const sequelize = require('../../config/database')
 
-const Allergy = sequelize.define(
-  'allergy',
+const ChatAttachment = sequelize.define(
+  'chat_attachment',
   {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    name: {
+    fileUrl: {
       type: DataTypes.STRING,
+      field: 'file_url',
       allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
     },
-    severity: {
-      type: DataTypes.ENUM('low', 'medium', 'high'),
-      defaultValue: 'medium',
+    fileType: {
+      type: DataTypes.STRING,
+      field: 'file_type',
     },
-    patientId: {
+    messageId: {
       type: DataTypes.INTEGER,
-      field: 'patient_id',
+      field: 'message_id',
       allowNull: false,
     },
   },
   {
-    tableName: 'allergies',
+    tableName: 'chat_attachments',
     underscored: true,
     timestamps: true,
     createdAt: 'created_at',
@@ -36,12 +34,12 @@ const Allergy = sequelize.define(
 )
 
 // Relationships
-Allergy.associate = (models) => {
-  // Allergy belongs to a Patient (User)
-  Allergy.belongsTo(models.User, {
-    foreignKey: 'patient_id',
-    as: 'patient',
+ChatAttachment.associate = (models) => {
+  // Attachment belongs to a Message
+  ChatAttachment.belongsTo(models.Message, {
+    foreignKey: 'message_id',
+    as: 'message',
   })
 }
 
-module.exports = Allergy
+module.exports = ChatAttachment

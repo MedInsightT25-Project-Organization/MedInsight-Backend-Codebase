@@ -1,22 +1,24 @@
 const { DataTypes } = require('sequelize')
 const sequelize = require('../../config/database')
 
-const Notification = sequelize.define(
-  'notification',
+const ResearchRequest = sequelize.define(
+  'research_request',
   {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    message: {
+    purpose: {
       type: DataTypes.TEXT,
       allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
     },
-    isRead: {
-      type: DataTypes.BOOLEAN,
-      field: 'is_read',
-      defaultValue: false,
+    status: {
+      type: DataTypes.ENUM('pending', 'approved', 'rejected'),
+      defaultValue: 'pending',
     },
     userId: {
       type: DataTypes.INTEGER,
@@ -25,7 +27,7 @@ const Notification = sequelize.define(
     },
   },
   {
-    tableName: 'notifications',
+    tableName: 'research_requests',
     underscored: true,
     timestamps: true,
     createdAt: 'created_at',
@@ -34,12 +36,12 @@ const Notification = sequelize.define(
 )
 
 // Relationships
-Notification.associate = (models) => {
-  // Notification belongs to a User
-  Notification.belongsTo(models.User, {
+ResearchRequest.associate = (models) => {
+  // Request belongs to a User (requester)
+  ResearchRequest.belongsTo(models.User, {
     foreignKey: 'user_id',
-    as: 'user',
+    as: 'requester',
   })
 }
 
-module.exports = Notification
+module.exports = ResearchRequest

@@ -106,7 +106,7 @@ class AuthController {
       const user = await User.create({
         email,
         passwordHash,
-        role: 'practitioner',
+        role: 'hospital_admin',
       })
 
       // Generate tokens
@@ -170,7 +170,7 @@ class AuthController {
       const user = await User.create({
         email,
         passwordHash,
-        role: 'admin',
+        role: 'super_admin',
       })
 
       // Generate tokens

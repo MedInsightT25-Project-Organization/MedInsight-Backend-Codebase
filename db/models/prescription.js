@@ -1,70 +1,71 @@
-const { Model, DataTypes } = require('sequelize')
-const { sequelize } = require('../../config/database')
+const { DataTypes } = require('sequelize')
+const sequelize = require('../../config/database')
 
 const Prescription = sequelize.define(
-  'Prescription',
+  'prescription',
   {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    medication: {
-      type: DataTypes.STRING,
+    medications: {
+      type: DataTypes.TEXT,
       allowNull: false,
-    },
-    dosage: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    frequency: {
-      type: DataTypes.STRING,
-      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
     },
     instructions: {
       type: DataTypes.TEXT,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
     },
-    medicalRecordId: {
+    patientId: {
       type: DataTypes.INTEGER,
-      field: 'medical_record_id',
+      field: 'patient_id',
       allowNull: false,
     },
-    practitionerId: {
+    hospitalId: {
       type: DataTypes.INTEGER,
-      field: 'practitioner_id',
+      field: 'hospital_id',
       allowNull: false,
     },
-    createdAt: {
-      type: DataTypes.DATE,
-      field: 'created_at',
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-      field: 'updated_at',
-    },
-    deletedAt: {
-      type: DataTypes.DATE,
-      field: 'deleted_at',
+    appointmentId: {
+      type: DataTypes.INTEGER,
+      field: 'appointment_id',
+      allowNull: true,
     },
   },
   {
-    tableName: 'prescription',
-    timestamps: true,
+    tableName: 'prescriptions',
     underscored: true,
-    freezeTableName: true,
-    paranoid: true,
+    timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
   }
 )
 
+// Relationships
 Prescription.associate = (models) => {
-  Prescription.belongsTo(models.MedicalRecord, {
-    foreignKey: 'medical_record_id',
-    as: 'MedicalRecord',
+  // Prescription belongs to a Patient (User)
+  Prescription.belongsTo(models.User, {
+    foreignKey: 'patient_id',
+    as: 'patient',
   })
 
-  Prescription.belongsTo(models.User, {
-    foreignKey: 'practitioner_id',
-    as: 'Practitioner',
+  // Prescription belongs to a Hospital
+  Prescription.belongsTo(models.Hospital, {
+    foreignKey: 'hospital_id',
+    as: 'hospital',
+  })
+
+  // Prescription optionally linked to an Appointment
+  Prescription.belongsTo(models.Appointment, {
+    foreignKey: 'appointment_id',
+    as: 'appointment',
   })
 }
 

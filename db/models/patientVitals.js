@@ -1,24 +1,28 @@
 const { DataTypes } = require('sequelize')
 const sequelize = require('../../config/database')
 
-const Allergy = sequelize.define(
-  'allergy',
+const PatientVitals = sequelize.define(
+  'patient_vitals',
   {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
+    heartRate: {
+      type: DataTypes.INTEGER,
+      field: 'heart_rate',
     },
-    severity: {
-      type: DataTypes.ENUM('low', 'medium', 'high'),
-      defaultValue: 'medium',
+    bloodPressure: {
+      type: DataTypes.STRING,
+      field: 'blood_pressure',
+    },
+    weight: {
+      type: DataTypes.DECIMAL(5, 2),
+    },
+    recordedAt: {
+      type: DataTypes.DATE,
+      field: 'recorded_at',
     },
     patientId: {
       type: DataTypes.INTEGER,
@@ -27,7 +31,7 @@ const Allergy = sequelize.define(
     },
   },
   {
-    tableName: 'allergies',
+    tableName: 'patient_vitals',
     underscored: true,
     timestamps: true,
     createdAt: 'created_at',
@@ -36,12 +40,12 @@ const Allergy = sequelize.define(
 )
 
 // Relationships
-Allergy.associate = (models) => {
-  // Allergy belongs to a Patient (User)
-  Allergy.belongsTo(models.User, {
+PatientVitals.associate = (models) => {
+  // Vitals belong to a Patient (User)
+  PatientVitals.belongsTo(models.User, {
     foreignKey: 'patient_id',
     as: 'patient',
   })
 }
 
-module.exports = Allergy
+module.exports = PatientVitals

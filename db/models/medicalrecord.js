@@ -1,66 +1,50 @@
-const { Model, DataTypes } = require('sequelize')
-const { sequelize } = require('../../config/database')
+const { DataTypes } = require('sequelize')
+const sequelize = require('../../config/database')
 
 const MedicalRecord = sequelize.define(
-  'MedicalRecord',
+  'medical_record',
   {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    diagnosis: {
+    notes: {
       type: DataTypes.TEXT,
       allowNull: false,
-    },
-    prescription: {
-      type: DataTypes.TEXT,
-    },
-    testResults: {
-      type: DataTypes.TEXT,
-      field: 'test_results',
     },
     patientId: {
       type: DataTypes.INTEGER,
       field: 'patient_id',
       allowNull: false,
     },
-    practitionerId: {
+    appointmentId: {
       type: DataTypes.INTEGER,
-      field: 'practitioner_id',
+      field: 'appointment_id',
       allowNull: false,
-    },
-    createdAt: {
-      type: DataTypes.DATE,
-      field: 'created_at',
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-      field: 'updated_at',
-    },
-    deletedAt: {
-      type: DataTypes.DATE,
-      field: 'deleted_at',
     },
   },
   {
-    tableName: 'medical_record',
-    timestamps: true,
+    tableName: 'medical_records',
     underscored: true,
-    freezeTableName: true,
-    paranoid: true,
+    timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
   }
 )
 
+// Relationships
 MedicalRecord.associate = (models) => {
+  // MedicalRecord belongs to a Patient (User)
   MedicalRecord.belongsTo(models.User, {
     foreignKey: 'patient_id',
-    as: 'Patient',
+    as: 'patient',
   })
 
-  MedicalRecord.belongsTo(models.User, {
-    foreignKey: 'practitioner_id',
-    as: 'Practitioner',
+  // MedicalRecord belongs to an Appointment
+  MedicalRecord.belongsTo(models.Appointment, {
+    foreignKey: 'appointment_id',
+    as: 'appointment',
   })
 }
 
