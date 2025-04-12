@@ -26,6 +26,50 @@ const User = sequelize.define(
       type: DataTypes.ENUM('patient', 'hospital_admin', 'super_admin'),
       defaultValue: 'patient',
     },
+    isActive: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+    },
+    isVerified: { 
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    hasCompletedProfile: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    isFirstLogin: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+    },
+    isEmailVerified: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    isPhoneVerified: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    isTwoFactorEnabled: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    isTwoFactorEnabled: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    deletedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
   },
   {
     tableName: 'users',

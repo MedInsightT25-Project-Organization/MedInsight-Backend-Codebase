@@ -18,6 +18,14 @@ const Hospital = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    address: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    contactNumber: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     contactEmail: {
       type: DataTypes.STRING,
       field: 'contact_email',
@@ -30,6 +38,18 @@ const Hospital = sequelize.define(
       field: 'created_by',
       allowNull: false,
     },
+    deletedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    createdAt: {
+      type: DataTypes.DATE, 
+      allowNull: false,
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },  
   },
   {
     tableName: 'hospitals',

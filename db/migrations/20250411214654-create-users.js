@@ -8,10 +8,6 @@ module.exports = {
         primaryKey: true,
         autoIncrement: true,
       },
-      full_name: {
-        type: Sequelize.STRING,
-        allowNull: true,
-      },
       email: {
         type: Sequelize.STRING,
         allowNull: false,
@@ -28,9 +24,33 @@ module.exports = {
         type: Sequelize.ENUM('patient', 'hospital_admin', 'super_admin'),
         defaultValue: 'patient',
       },
-      created_at: {
-        type: Sequelize.DATE,
-        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+      is_active: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: true,
+      },
+      is_verified: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+      },
+      has_completed_profile: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+      },
+      is_first_login: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: true,
+      },
+      is_email_verified: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+      },
+      is_phone_verified: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+      },
+        is_two_factor_enabled: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
       },
       updated_at: {
         type: Sequelize.DATE,

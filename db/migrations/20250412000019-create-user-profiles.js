@@ -8,6 +8,10 @@ module.exports = {
         primaryKey: true,
         autoIncrement: true,
       },
+      full_name: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },  
       dob: {
         type: Sequelize.DATEONLY, // Stores date only (YYYY-MM-DD)
         allowNull: true,
@@ -18,6 +22,42 @@ module.exports = {
       },
       address: {
         type: Sequelize.TEXT,
+        allowNull: true,
+      },
+      contact_number: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      profile_picture: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      occupation: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      nationality: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },  
+      next_of_kin: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      next_of_kin_contact_number: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      next_of_kin_relationship: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      next_of_kin_address: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      next_of_kin_email: {
+        type: Sequelize.STRING,
         allowNull: true,
       },
       user_id: {
