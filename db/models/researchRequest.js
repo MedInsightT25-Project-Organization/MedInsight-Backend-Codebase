@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize')
-const sequelize = require('../../config/database')
+const {sequelize} = require('../../config/database')
 
 const ResearchRequest = sequelize.define(
   'research_request',
