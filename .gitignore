@@ -4,6 +4,8 @@
 # node_modules
 node_modules
 
+# logs
+logs
 
 # sql files
 *.sql
@@ -11,5 +13,7 @@ node_modules
 # doc files
 *.docx
 *.doc
+*.txt
+*.log
 
 

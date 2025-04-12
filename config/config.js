@@ -1,5 +1,4 @@
-const dotenv = require('dotenv')
-dotenv.config()
+require('dotenv').config()
 
 const config = {
   development: {
@@ -7,7 +6,12 @@ const config = {
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     host: process.env.DB_HOST,
-    dialect: process.env.DB_DIALECT,
+    dialect: 'postgres',
+    redis: {
+      host: '127.0.0.1',
+      port: 6379,
+      password: 'null',
+    },
   },
   test: {
     username: process.env.DB_USER,
@@ -15,6 +19,11 @@ const config = {
     database: process.env.DB_NAME,
     host: process.env.DB_HOST,
     dialect: process.env.DB_DIALECT,
+    redis: {
+      host: '127.0.0.1',
+      port: 6379,
+      password: 'null',
+    },
   },
   production: {
     username: process.env.DB_USER,
@@ -22,6 +31,11 @@ const config = {
     database: process.env.DB_NAME,
     host: process.env.DB_HOST,
     dialect: process.env.DB_DIALECT,
+    redis: {
+      host: process.env.REDIS_HOST,
+      port: process.env.REDIS_PORT,
+      password: process.env.REDIS_PASSWORD,
+    },
   },
 }
 
