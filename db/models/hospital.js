@@ -14,9 +14,13 @@ const Hospital = sequelize.define(
       allowNull: false,
       unique: true,
     },
-    location: {
-      type: DataTypes.STRING,
-      allowNull: false,
+    latitude: {
+      type: DataTypes.FLOAT,
+      allowNull: true,
+    },
+    longitude: {
+      type: DataTypes.FLOAT,
+      allowNull: true,
     },
     address: {
       type: DataTypes.STRING,
@@ -32,6 +36,26 @@ const Hospital = sequelize.define(
       validate: {
         isEmail: true,
       },
+    },
+    state: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    country: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    city: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    localGovernmentArea: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    postalCode: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     createdBy: {
       type: DataTypes.INTEGER,

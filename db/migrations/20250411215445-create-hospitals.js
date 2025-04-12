@@ -13,11 +13,39 @@ module.exports = {
         allowNull: false,
         unique: true,
       },
-      location: {
+      latitude: {
+        type: Sequelize.FLOAT,
+        allowNull: true,
+      },
+      longitude: {
+        type: Sequelize.FLOAT,
+        allowNull: true,
+      },
+      state: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      contact_email: {
+      country: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      city: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      localGovernmentArea: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      postalCode: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      contactNumber: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      contactEmail: {
         type: Sequelize.STRING,
         validate: {
           isEmail: true,
