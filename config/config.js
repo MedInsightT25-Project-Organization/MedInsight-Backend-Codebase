@@ -2,15 +2,15 @@ require('dotenv').config()
 
 const config = {
   development: {
-    username: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    host: process.env.DB_HOST,
+    username: "postgres",
+    password: 'Funmi8099..',
+    database:'MedInsight',
+    host: 'localhost',
     dialect: 'postgres',
     redis: {
-      host: '127.0.0.1',
-      port: 6379,
-      password: 'null',
+      host: process.env.REDIS_HOST,
+      port: process.env.REDIS_PORT,
+      password: process.env.REDIS_PASSWORD,
     },
   },
   test: {
@@ -20,9 +20,9 @@ const config = {
     host: process.env.DB_HOST,
     dialect: process.env.DB_DIALECT,
     redis: {
-      host: '127.0.0.1',
-      port: 6379,
-      password: 'null',
+      host: process.env.REDIS_HOST,
+      port: process.env.REDIS_PORT,
+      password: process.env.REDIS_PASSWORD,
     },
   },
   production: {
