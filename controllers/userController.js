@@ -2,7 +2,8 @@ const { User, UserProfile, UserPreference, Notification, PatientVitals } = requi
 const { logger } = require('../utils/logger')
 const { ValidationError, NotFoundError } = require('../utils/errors')
 const cloudinary = require('cloudinary').v2
-const  {  validateUserProfile, validateUserPreference,validateProfilePicture, validatePatientVital,} = require('./validators/userValidator')
+const  {  validateUserProfile, validateUserPreference, validateProfilePicture, validatePatientVital,} = require('./validators/userValidator')
+
 
 // Configure Cloudinary
 cloudinary.config({
@@ -32,7 +33,14 @@ class UserController {
             attributes: {
               exclude: ['created_at', 'updated_at', 'user_id']
             }
-          }
+          },
+          {
+            model: PatientVitals,
+            as: 'vitals',
+            attributes: {
+              exclude: ['created_at', 'updated_at', 'user_id']
+            }
+          },
         ],
         attributes: {
           exclude: ['password_hash', 'created_at', 'updated_at', 'deleted_at']
@@ -57,22 +65,53 @@ class UserController {
     }
   }
 
+  // Create user profile
+  async createProfile(req, res) {
+    const data = req.body
+    const { error } = validateUserProfile(data)
+    if (error) {
+      throw new ValidationError(error.details[0].message)
+    }
+    const transaction = await User.sequelize.transaction()
+    try {
+      const [userProfile] = await UserProfile.findOrCreate({
+        where: { user_id: userId },
+        defaults: { user_id: userId },
+        transaction
+      })
+
+      await userProfile.update(data, { transaction })
+
+      // Update user's profile completion status
+      await User.update(
+        { has_completed_profile: true },
+        { where: { id: userId }, transaction }
+      ) 
+
+      await transaction.commit()
+      
+    } catch (error) {
+      await transaction.rollback()
+      throw error
+    }
+    res.json({
+      status: 'success',
+      message: 'Profile created successfully',
+      data: {
+        userProfile
+      } 
+    })
+  }
+
   // Update user profile
   async updateProfile(req, res) {
     try {
       const userId = req.user.id
-      const {
-        fullName,
-        emailAddress,
-        phoneNumber,
-        dateOfBirth,
-        gender,
-        address,
-        occupation,
-        emergencyContactNumber,
-        profilePicture,
-      } = req.body
-
+      const data = req.body
+      const { error } = validateUserProfile(data)
+      if (error) {
+        throw new ValidationError(error.details[0].message)
+      }
       // Start a transaction
       const transaction = await User.sequelize.transaction()
 
@@ -85,22 +124,17 @@ class UserController {
         })
 
         await userProfile.update({
-          full_name: fullName,
-          email_address: emailAddress,
-          phone_number: phoneNumber,
-          date_of_birth: dateOfBirth,
-          gender,
-          address,
-          occupation,
-          emergency_contact_number: emergencyContactNumber,
-          profile_picture: profilePicture,
+          full_name: data.fullName,
+          phone_number: data.phoneNumber,
+          date_of_birth: data.dateOfBirth,
+          gender: data.gender,
+          address: data.address,
+          occupation: data.occupation,
+          emergency_contact_number: data.emergencyContactNumber,
+          local_government: data.localGovernment,
+          emergency_contact: data.emergencyContact, 
         }, { transaction })
 
-        // Update user's profile completion status
-        await User.update(
-          { has_completed_profile: true },
-          { where: { id: userId }, transaction }
-        )
 
         // Commit the transaction
         await transaction.commit()
@@ -154,7 +188,7 @@ class UserController {
   // Upload profile picture
   async uploadProfilePicture(req, res) {
     try {
-      const userId = req.user.id
+      const userId = req.user.id 
 
       if (!req.file) {
         throw new ValidationError('No file uploaded')
@@ -291,10 +325,31 @@ class UserController {
       throw error
     }
   }
-  async updatePatientVital(req, res) {
+
+  // Update patient vital
+  async updatePatientVital(req, res) {  
     const data = req.body;
-    validatePatientVital(data)
-    
+    const { error } = validatePatientVital(data)
+    if (error) {
+      throw new ValidationError(error.details[0].message)
+    }
+    const transaction = await User.sequelize.transaction()
+    try {
+      const [patientVital] = await PatientVitals.findOrCreate({
+        where: { user_id: userId },
+        defaults: { user_id: userId },
+        transaction
+      })
+      await patientVital.update(data, { transaction })
+      await transaction.commit()
+    } catch (error) {
+      await transaction.rollback()
+      throw error
+    }
+    res.json({
+      status: 'success',
+      message: 'Patient vital updated successfully',
+    })  
   }
   
 }
