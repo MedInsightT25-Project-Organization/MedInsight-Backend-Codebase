@@ -8,46 +8,72 @@ const UserProfile = sequelize.define(
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
+      allowNull: false,
     },
     fullName: {
       type: DataTypes.STRING,
       field: 'full_name',
+      allowNull: false,
     },
     dob: {
       type: DataTypes.DATEONLY,
+      allowNull: false,
     },
     gender: {
       type: DataTypes.STRING,
+      allowNull: false,
     },
     address: {
       type: DataTypes.TEXT,
+      allowNull: false,
     },
-    contactNumber: {
+    localGovernment: {
       type: DataTypes.STRING,
+      allowNull: false,
+    },
+    phoneNumber: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     profilePicture: {
       type: DataTypes.STRING,
+      allowNull: true,
     },
     occupation: {
       type: DataTypes.STRING,
+      allowNull: false,
+    },
+    emergencyContact: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    emergencyContactNumber: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     nationality: {
       type: DataTypes.STRING,
+      allowNull: true,
     },
     nextOfKin: {
       type: DataTypes.STRING,
+      allowNull: true,
     },
     nextOfKinContactNumber: {
       type: DataTypes.STRING,
+      allowNull: true,
     },    
     nextOfKinRelationship: {
       type: DataTypes.STRING,
+      allowNull: true,
     },
     nextOfKinAddress: {
       type: DataTypes.STRING,
+      allowNull: true,
     },
     nextOfKinEmail: {
       type: DataTypes.STRING,
+      allowNull: true,
     },
     userId: {
       type: DataTypes.INTEGER,

@@ -10,23 +10,23 @@ module.exports = {
       },
       full_name: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: false,
       },  
       dob: {
         type: Sequelize.DATEONLY, // Stores date only (YYYY-MM-DD)
-        allowNull: true,
+        allowNull: false,
       },
       gender: {
         type: Sequelize.STRING, // e.g., "male", "female", "non-binary"
-        allowNull: true,
+        allowNull: false,
       },
       address: {
         type: Sequelize.TEXT,
-        allowNull: true,
+        allowNull: false,
       },
-      contact_number: {
+      phone_number: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: false,
       },
       profile_picture: {
         type: Sequelize.STRING,
@@ -36,6 +36,18 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true,
       },
+      local_government: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },  
+      emergency_contact: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      emergency_contact_number: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },  
       nationality: {
         type: Sequelize.STRING,
         allowNull: true,

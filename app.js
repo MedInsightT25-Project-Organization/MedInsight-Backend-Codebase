@@ -5,6 +5,7 @@ const path = require('path')
 const { testConnection } = require('./config/database')
 const authRoutes = require('./routes/authRoutes')
 const hospitalRoutes = require('./routes/hospitalRoutes')
+const userRoutes = require('./routes/userRoutes')
 const logRoutes = require('./routes/logRoutes')
 const { errorHandler, errorTypeHandler } = require('./middleware/errorHandler')
 const { NotFoundError } = require('./utils/errors')
@@ -37,6 +38,7 @@ app.use((req, res, next) => {
 app.use('/api/auth', authRoutes)
 app.use('/api/logs', logRoutes)
 app.use('/api/hospitals', hospitalRoutes)
+app.use('/api/users', userRoutes)
 
 // Health check endpoint
 app.get('/health', (req, res) => {
