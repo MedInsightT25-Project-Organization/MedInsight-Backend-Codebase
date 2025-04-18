@@ -1,10 +1,10 @@
 const express = require('express')
 const router = express.Router()
 const upload = require('../config/multer')
-const userController = require('../controllers/userController')
+const UserController = require('../controllers/userController')
 const { authenticate } = require('../middleware/auth')
 
-
+const userController = new UserController()
 
 // Apply authentication middleware to all routes
 router.use(authenticate)

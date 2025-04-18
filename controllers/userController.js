@@ -1,8 +1,12 @@
-const { User, UserProfile, UserPreference, Notification, PatientVitals } = require('../db/models')
+const User = require('../db/models/user')
+const UserProfile = require('../db/models/userProfile')
+const UserPreference = require('../db/models/userPreference')
+const PatientVitals = require('../db/models/patientVitals')
+const Notification = require('../db/models/notification')
 const { logger } = require('../utils/logger')
 const { ValidationError, NotFoundError } = require('../utils/errors')
 const cloudinary = require('cloudinary').v2
-const  {  validateUserProfile, validateUserPreference, validateProfilePicture, validatePatientVital,} = require('./validators/userValidator')
+const  {  validateUserProfile, validateUserPreference, validateProfilePicture, validatePatientVital} = require('../validators/userValidator')
 
 
 // Configure Cloudinary
@@ -354,4 +358,4 @@ class UserController {
   
 }
 
-module.exports = new UserController()
+module.exports = UserController
