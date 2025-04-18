@@ -39,15 +39,15 @@ const Hospital = sequelize.define(
     },
     state: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     country: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     city: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     localGovernmentArea: {
       type: DataTypes.STRING,
@@ -56,6 +56,13 @@ const Hospital = sequelize.define(
     postalCode: {
       type: DataTypes.STRING,
       allowNull: true,
+    },
+    serviceSummary: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    workHours: {
+      type: DataTypes.STRING,
     },
     createdBy: {
       type: DataTypes.INTEGER,
@@ -81,6 +88,8 @@ const Hospital = sequelize.define(
     timestamps: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at',
+    deletedAt: 'deleted_at',
+    paranoid: true,
   }
 )
 

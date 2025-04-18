@@ -23,19 +23,19 @@ module.exports = {
       },
       state: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       country: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       city: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       localGovernmentArea: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       postalCode: {
         type: Sequelize.STRING,
@@ -43,13 +43,21 @@ module.exports = {
       },
       contactNumber: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       contactEmail: {
         type: Sequelize.STRING,
         validate: {
           isEmail: true,
         },
+      },
+      serviceSummary: {
+        type: Sequelize.STRING,
+        allowNull: false ,
+      },
+      workHours: {
+        type: Sequelize.STRING,
+        allowNull: true,
       },
       created_by: {
         type: Sequelize.INTEGER,
