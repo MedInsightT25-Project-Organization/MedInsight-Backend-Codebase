@@ -13,6 +13,7 @@ const {
   sendPasswordResetEmail,
   sendWelcomeEmail,
   sendLoginNotificationEmail,
+  sendVerificationEmail,
 } = require('../utils/email')
 const { generateToken, generateRefreshToken } = require('../utils/jwt')
 const { ValidationError, AuthenticationError } = require('../utils/errors')
@@ -506,6 +507,97 @@ class AuthController {
       logger.error('Reset password error:', error)
       throw new AuthenticationError('Invalid or expired reset token')
     }
+  }
+
+  // Send Email Verification
+  async sendEmailVerification(req, res) {
+    const loggedInUser = req.user
+    try {
+      const email = loggedInUser.email
+
+      const user = await User.findOne({ where: { email } })
+      
+      if (!user) {
+        throw new AuthenticationError('User not found')
+      }
+      if (user.isEmailVerified === true) {
+        throw new AuthenticationError('Email already verified')
+      }
+
+      const verificationToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+        expiresIn: '1h',
+      })
+      await cacheClient.set(`verification_token:${user.id}`, verificationToken, 'EX', 3600)
+      
+      await sendVerificationEmail(user.email, verificationToken)
+
+      res.json({ message: 'Email verification sent' })
+    } catch (error) {
+      logger.error('Send email verification error:', error)
+      throw new Error('Internal server error')
+    }
+  }
+
+  // verify email
+    async verifyEmail(req, res) {
+    try {
+      const { token } = req.body
+      const storedToken = await cacheClient.get(`verification_token:${user.id}`)
+
+      if (!storedToken || storedToken !== token) {
+        throw new AuthenticationError('Invalid or expired verification token')
+      }
+
+      const decoded = jwt.verify(token, process.env.JWT_SECRET)
+
+      const user = await User.findByPk(decoded.id)
+      
+      if (!user) {
+        throw new AuthenticationError('User not found')
+      }
+
+      await user.update({ isEmailVerified: true })
+
+      res.json({ message: 'Email verified successfully' })
+
+    } catch (error) {
+      logger.error('Verify email error:', error)
+      throw new Error('Internal server error')
+    }
+  }
+
+  // Change Password
+  async changePassword(req, res) {
+    const loggedInUser = req.user
+    try {
+      const { oldPassword, newPassword, confirmPassword  } = req.body
+
+      if (newPassword !== confirmPassword) {
+        throw new AuthenticationError('New password and confirm password do not match')
+      }
+
+      const user = await User.findByPk(loggedInUser.id)
+
+      if (!user) {
+        throw new AuthenticationError('User not found')
+      }
+
+      const isPasswordValid = await bcrypt.compare(oldPassword, user.passwordHash)
+
+      if (!isPasswordValid) {
+        throw new AuthenticationError('Invalid old password')
+      }
+
+      const passwordHash = await bcrypt.hash(newPassword, 10)
+
+      await user.update({ passwordHash })
+
+      res.json({ message: 'Password changed successfully' })  
+      
+    } catch (error) {
+      logger.error('Change password error:', error)
+      throw new Error('Internal server error')
+    } 
   }
 
   // Get current session
