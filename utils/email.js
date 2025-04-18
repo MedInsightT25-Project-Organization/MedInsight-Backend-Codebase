@@ -107,8 +107,33 @@ const sendPasswordResetEmail = async (email, token) => {
   }
 }
 
+const sendVerificationEmail = async (email, token) => {
+  try {
+    const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${token}`
+
+    const mailOptions = {
+      from: process.env.SMTP_USER,
+      to: email,
+      subject: 'Email Verification',
+      html: `
+        <h1>Email Verification</h1>
+        <p>Click the link below to verify your email:</p>
+        <a href="${verificationUrl}">Verify Email</a>
+        <p>If you did not request this, please ignore this email.</p>
+      `,
+    }
+
+    await transporter.sendMail(mailOptions)
+    logger.info(`Email verification email sent to: ${email}`)
+  } catch (error) {
+    logger.error('Error sending email verification email:', error)
+    throw new Error('Failed to send email verification email')
+  }
+}
+
 module.exports = {
   sendWelcomeEmail,
   sendLoginNotificationEmail,
   sendPasswordResetEmail,
+  sendVerificationEmail,
 }
