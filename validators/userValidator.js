@@ -1,28 +1,39 @@
 const Joi = require('joi')
 
-const validateUserProfile = Joi.object({
-    name: Joi.string().required(),
-    email: Joi.string().email().required(),
-    phone: Joi.string().required(),
+const validateUserProfile = (data) => {
+    const schema = Joi.object({
+    fullName: Joi.string().required(),
+    phoneNumber: Joi.string().required(),
     address: Joi.string().required(),
-    city: Joi.string().required(),
-    state: Joi.string().required(),
-    zip: Joi.string().required(),
-    country: Joi.string().required(),
     gender: Joi.string().required(),
     dob: Joi.date().required(),
-    profilePicture: Joi.string().required(),    
-    
-})
+    localGovernment: Joi.string().required(),
+    gender: Joi.string().required(),
+    emergencyContact: Joi.string().required(),
+    emergencyContactNumber: Joi.string().required(),
+    })
+    return schema.validate(data)
+}
 
-const validateUserPreference = Joi.object({
-    preferences: Joi.array().required(),
-})
-const validateProfilePicture = Joi.object({
-    profilePicture: Joi.string().required(),
-})
+const validateUserPreference = (data) => {
+    const schema = Joi.object({
+        preferences: Joi.array().required(),
+    })
+    return schema.validate(data)
+    }
+const validateProfilePicture = (data) => {
+    const schema = Joi.object({
+        profilePicture: Joi.string().required(),
+    })
+    return schema.validate(data)
+}
 
-const validatePatientVital = Joi.object({})
+    const validatePatientVital = (data) => {
+    const schema = Joi.object({
+        vital: Joi.object().required(),
+    })
+    return schema.validate(data)
+}
 
 module.exports = {
     validateUserProfile,

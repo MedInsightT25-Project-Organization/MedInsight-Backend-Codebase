@@ -1,6 +1,6 @@
 const { User, UserProfile, UserPreference, Notification, PatientVitals } = require('../db/models')
 const { logger } = require('../utils/logger')
-const { ValidationError } = require('../utils/errors')
+const { ValidationError, NotFoundError } = require('../utils/errors')
 const cloudinary = require('cloudinary').v2
 const  {  validateUserProfile, validateUserPreference,validateProfilePicture, validatePatientVital,} = require('./validators/userValidator')
 
