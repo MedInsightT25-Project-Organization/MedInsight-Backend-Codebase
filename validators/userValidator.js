@@ -17,20 +17,20 @@ const validateUserProfile = (data) => {
 
 const validateUserPreference = (data) => {
     const schema = Joi.object({
-        preferences: Joi.array().required(),
+        preferences: Joi.object().required(),
     })
     return schema.validate(data)
     }
 const validateProfilePicture = (data) => {
     const schema = Joi.object({
-        profilePicture: Joi.string().required(),
+    profilePicture: Joi.string().required(),
     })
     return schema.validate(data)
 }
 
     const validatePatientVital = (data) => {
     const schema = Joi.object({
-        vital: Joi.object().required(),
+    vital: Joi.object().required(),
     })
     return schema.validate(data)
 }
