@@ -1,5 +1,6 @@
 const Hospital = require("../db/models/hospital");
-const { validationResult } = require("express-validator");
+const {NotFoundError, ValidationError} = require("../utils/errors")
+const {validateHospital, validateHospitalUpdate} = require("../validators/hospitalValidator")
 
 exports.createHospital = async (req, res) => {
     const data = req.body;  
