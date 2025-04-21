@@ -8,6 +8,8 @@ const { logger } = require('../utils/logger')
 const {
   validateRegistration,
   validateLogin,
+  validatePasswordReset,
+  validateEmail
 } = require('../validators/authValidator')
 const {
   sendPasswordResetEmail,
@@ -16,13 +18,18 @@ const {
   sendVerificationEmail,
 } = require('../utils/email')
 const { generateToken, generateRefreshToken } = require('../utils/jwt')
-const { ValidationError, AuthenticationError } = require('../utils/errors')
+const {
+  ValidationError,
+  AuthenticationError,
+  NotFoundError,
+} = require('../utils/errors')
+const Notification = require('../db/models/notification')
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
 
 class AuthController {
   // Register a new patient
-  async registerPatient(req, res) {
+  async registerPatient(req, res, next) {
     try {
       const { error } = validateRegistration(req.body)
       if (error) {
@@ -81,12 +88,12 @@ class AuthController {
       })
     } catch (error) {
       logger.error('Registration error:', error)
-      throw new Error('Internal server error')
+      next(error)
     }
   }
 
   // Register a new practitioner
-  async registerPractitioner(req, res) {
+  async registerPractitioner(req, res, next) {
     try {
       const { error } = validateRegistration(req.body)
       if (error) {
@@ -145,12 +152,12 @@ class AuthController {
       })
     } catch (error) {
       logger.error('Registration error:', error)
-      throw new Error('Internal server error')
+      next(error)
     }
   }
 
   // Register a new admin
-  async registerAdmin(req, res) {
+  async registerAdmin(req, res, next) {
     try {
       const { error } = validateRegistration(req.body)
       if (error) {
@@ -209,12 +216,12 @@ class AuthController {
       })
     } catch (error) {
       logger.error('Registration error:', error)
-      throw new Error('Internal server error')
+      next(error)
     }
   }
 
   // Login user
-  async login(req, res) {
+  async login(req, res, next) {
     try {
       const { error } = validateLogin(req.body)
       if (error) {
@@ -280,12 +287,12 @@ class AuthController {
       })
     } catch (error) {
       logger.error('Login error:', error)
-      throw new Error('Internal server error')
+      next(error)
     }
   }
 
   // Google OAuth login
-  async googleLogin(req, res) {
+  async googleLogin(req, res, next) {
     try {
       const { token } = req.body
 
@@ -365,12 +372,12 @@ class AuthController {
       })
     } catch (error) {
       logger.error('Google login error:', error)
-      throw new Error('Internal server error')
+      next(error)
     }
   }
 
   // Refresh token
-  async refreshToken(req, res) {
+  async refreshToken(req, res, next) {
     try {
       const { refreshToken } = req.body
 
@@ -412,14 +419,17 @@ class AuthController {
       })
     } catch (error) {
       logger.error('Token refresh error:', error)
-      throw new AuthenticationError('Invalid refresh token')
+      next(error)
     }
   }
 
   // Logout user
-  async logout(req, res) {
+  async logout(req, res, next) {
     try {
       const { refreshToken } = req.body
+      if (!refreshToken){
+        throw new ValidationError('Refresh Token Required')
+      }
 
       if (refreshToken) {
         const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET)
@@ -429,13 +439,17 @@ class AuthController {
       res.json({ message: 'Logged out successfully' })
     } catch (error) {
       logger.error('Logout error:', error)
-      throw new Error('Internal server error')
+      next(error)
     }
   }
 
   // Forgot password
-  async forgotPassword(req, res) {
+  async forgotPassword(req, res, next) {
     try {
+      const { error } = validateEmail(req.body)
+      if (error) {
+        throw new ValidationError(error.details[0].message)
+      }
       const { email } = req.body
 
       // Find user
@@ -461,20 +475,18 @@ class AuthController {
       res.json({ message: 'Password reset email sent if account exists' })
     } catch (error) {
       logger.error('Forgot password error:', error)
-      throw new Error('Failed to process request')
+      next(error)
     }
   }
 
   // Reset password
-  async resetPassword(req, res) {
+  async resetPassword(req, res, next) {
     try {
-      const { token, password } = req.body
-
-      if (!token || !password) {
-        return res
-          .status(400)
-          .json({ error: 'Token and password are required' })
+      const { error } = validatePasswordReset(req.body)
+      if (error) {
+        throw new ValidationError(error.details[0].message)
       }
+      const { token, newPassword} = req.body
 
       // Verify token
       const decoded = jwt.verify(token, process.env.JWT_SECRET)
@@ -492,7 +504,7 @@ class AuthController {
       }
 
       // Hash new password
-      const passwordHash = await bcrypt.hash(password, 10)
+      const passwordHash = await bcrypt.hash(newPassword, 10)
 
       // Update password
       await user.update({ passwordHash })
@@ -505,18 +517,18 @@ class AuthController {
       res.json({ message: 'Password reset successfully' })
     } catch (error) {
       logger.error('Reset password error:', error)
-      throw new AuthenticationError('Invalid or expired reset token')
+      next(error)
     }
   }
 
   // Send Email Verification
-  async sendEmailVerification(req, res) {
+  async sendEmailVerification(req, res, next) {
     const loggedInUser = req.user
     try {
       const email = loggedInUser.email
 
       const user = await User.findOne({ where: { email } })
-      
+
       if (!user) {
         throw new AuthenticationError('User not found')
       }
@@ -524,56 +536,88 @@ class AuthController {
         throw new AuthenticationError('Email already verified')
       }
 
-      const verificationToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-        expiresIn: '1h',
-      })
-      await cacheClient.set(`verification_token:${user.id}`, verificationToken, 'EX', 3600)
-      
+      const verificationToken = jwt.sign(
+        { id: user.id },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: '1h',
+        }
+      )
+      await cacheClient.set(
+        `verification_token:${user.id}`,
+        verificationToken,
+        'EX',
+        3600
+      )
+
       await sendVerificationEmail(user.email, verificationToken)
 
       res.json({ message: 'Email verification sent' })
     } catch (error) {
       logger.error('Send email verification error:', error)
-      throw new Error('Internal server error')
+      next(error)
     }
   }
 
   // verify email
-    async verifyEmail(req, res) {
+  async verifyEmail(req, res, next) {
     try {
-      const { token } = req.body
-      const storedToken = await cacheClient.get(`verification_token:${user.id}`)
+      const token = req.body.token || req.params.token
+
+      if (!token){
+        throw new ValidationError('Email Verification Token is Required')
+      }
+      // Verify token first
+      const decoded = jwt.verify(token, process.env.JWT_SECRET)
+
+      // Get stored token from Redis
+      const storedToken = await cacheClient.get(
+        `verification_token:${decoded.id}`
+      )
 
       if (!storedToken || storedToken !== token) {
         throw new AuthenticationError('Invalid or expired verification token')
       }
 
-      const decoded = jwt.verify(token, process.env.JWT_SECRET)
-
+      // Get user from database
       const user = await User.findByPk(decoded.id)
-      
+
       if (!user) {
         throw new AuthenticationError('User not found')
       }
 
+      if (user.isEmailVerified === true) {
+        throw new AuthenticationError('Email already verified')
+      }
+
+      // Update user's email verification status
       await user.update({ isEmailVerified: true })
 
-      res.json({ message: 'Email verified successfully' })
+      // Delete the verification token from Redis
+      await cacheClient.del(`verification_token:${decoded.id}`)
 
+      res.json({ message: 'Email verified successfully' })
     } catch (error) {
       logger.error('Verify email error:', error)
-      throw new Error('Internal server error')
+      next(error)
     }
   }
 
   // Change Password
-  async changePassword(req, res) {
+  async changePassword(req, res, next) {
     const loggedInUser = req.user
     try {
-      const { oldPassword, newPassword, confirmPassword  } = req.body
+      
+      const { oldPassword, newPassword, confirmPassword } = req.body
 
+      if(!oldPassword || !newPassword || !confirmPassword){
+        throw new ValidationError('You are required to complete all fields')
+      }
+      
       if (newPassword !== confirmPassword) {
-        throw new AuthenticationError('New password and confirm password do not match')
+        throw new AuthenticationError(
+          'New password and confirm password do not match'
+        )
       }
 
       const user = await User.findByPk(loggedInUser.id)
@@ -582,7 +626,10 @@ class AuthController {
         throw new AuthenticationError('User not found')
       }
 
-      const isPasswordValid = await bcrypt.compare(oldPassword, user.passwordHash)
+      const isPasswordValid = await bcrypt.compare(
+        oldPassword,
+        user.passwordHash
+      )
 
       if (!isPasswordValid) {
         throw new AuthenticationError('Invalid old password')
@@ -592,16 +639,15 @@ class AuthController {
 
       await user.update({ passwordHash })
 
-      res.json({ message: 'Password changed successfully' })  
-      
+      res.json({ message: 'Password changed successfully' })
     } catch (error) {
       logger.error('Change password error:', error)
-      throw new Error('Internal server error')
-    } 
+      next(error)
+    }
   }
 
   // Get current session
-  async getSession(req, res) {
+  async getSession(req, res, next) {
     try {
       const user = req.user
 
@@ -616,7 +662,39 @@ class AuthController {
       })
     } catch (error) {
       logger.error('Get session error:', error)
-      throw new Error('Internal server error')
+      next(error)
+    }
+  }
+
+  // Mark notification as read
+  async markNotificationAsRead(req, res, next) {
+    try {
+      const { notificationId } = req.params
+      const userId = req.user.id
+
+      // Find the notification
+      const notification = await Notification.findOne({
+        where: {
+          id: notificationId,
+          userId: userId,
+        },
+      })
+
+      if (!notification) {
+        throw new NotFoundError('Notification not found')
+      }
+
+      // Update notification status
+      await notification.update({ isRead: true })
+
+      res.status(200).json({
+        status: 'success',
+        message: 'Notification marked as read',
+        data: notification,
+      })
+    } catch (error) {
+      logger.error('Mark notification as read error:', error)
+      next(error)
     }
   }
 }

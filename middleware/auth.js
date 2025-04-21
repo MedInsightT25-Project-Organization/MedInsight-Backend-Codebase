@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken')
-const { User } = require('../db/models/user')
+const User = require('../db/models/user')
 const { AuthenticationError, AuthorizationError } = require('../utils/errors')
 
 const authenticate = async (req, res, next) => {
@@ -28,13 +28,13 @@ const authenticate = async (req, res, next) => {
     next()
   } catch (error) {
     console.error('Authentication error:', error)
-    throw new AuthenticationError('Invalid token')
+    next(new AuthenticationError('Invalid token'))
   }
 }
 
 const isPatient = (req, res, next) => {
   if (req.user.role !== 'patient') {
-  throw new AuthorizationError('Unauthorized')
+    throw new AuthorizationError('Unauthorized')
   }
   next()
 }

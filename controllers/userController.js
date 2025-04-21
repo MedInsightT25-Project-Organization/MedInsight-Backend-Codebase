@@ -18,7 +18,7 @@ cloudinary.config({
 
 class UserController {
   // Get user profile
-  async getProfile(req, res) {
+  async getProfile(req, res, next) {
     try {
       const userId = req.user.id
 
@@ -65,12 +65,12 @@ class UserController {
       })
     } catch (error) {
       logger.error('Get profile error:', error)
-      throw error
+      next(error)
     }
   }
 
   // Create user profile
-  async createProfile(req, res) {
+  async createProfile(req, res, next) {
     const data = req.body
     const { error } = validateUserProfile(data)
     if (error) {
@@ -96,7 +96,7 @@ class UserController {
       
     } catch (error) {
       await transaction.rollback()
-      throw error
+      next(error)
     }
     res.json({
       status: 'success',
@@ -108,7 +108,7 @@ class UserController {
   }
 
   // Update user profile
-  async updateProfile(req, res) {
+  async updateProfile(req, res, next) {
     try {
       const userId = req.user.id
       const data = req.body
@@ -152,16 +152,16 @@ class UserController {
       } catch (error) {
         // Rollback the transaction if there's an error
         await transaction.rollback()
-        throw error
+        next(error)
       }
     } catch (error) {
       logger.error('Update profile error:', error)
-      throw error
+      next(error)
     }
   }
 
   // Upload user preferences
-  async uploadPreferences(req, res) {
+  async uploadPreferences(req, res, next) {
     try {
       const userId = req.user.id
       const { language, darkMode, notificationPreferences } = req.body
@@ -185,12 +185,12 @@ class UserController {
       })
     } catch (error) {
       logger.error('Update preferences error:', error)
-      throw error
+      next(error)
     }
   }
 
   // Upload profile picture
-  async uploadProfilePicture(req, res) {
+  async uploadProfilePicture(req, res, next) {
     try {
       const userId = req.user.id 
 
@@ -228,12 +228,12 @@ class UserController {
       })
     } catch (error) {
       logger.error('Upload profile picture error:', error)
-      throw error
+      next(error)
     }
   }
 
   // Get user history
-  async getUserHistory(req, res) {
+  async getUserHistory(req, res, next) {
     try {
       const userId = req.params.id
       const page = parseInt(req.query.page) || 1
@@ -293,12 +293,12 @@ class UserController {
       })
     } catch (error) {
       logger.error('Get user history error:', error)
-      throw error
+      next(error)
     }
-  }
+    }
 
   // Mark notification as read
-  async markNotificationAsRead(req, res) {
+  async markNotificationAsRead(req, res, next) {
     try {
       const userId = req.user.id
       const notificationId = req.params.id
@@ -326,12 +326,12 @@ class UserController {
       })
     } catch (error) {
       logger.error('Mark notification as read error:', error)
-      throw error
+      next(error)
     }
   }
 
   // Update patient vital
-  async updatePatientVital(req, res) {  
+  async updatePatientVital(req, res, next ) {  
     const data = req.body;
     const { error } = validatePatientVital(data)
     if (error) {
@@ -348,14 +348,12 @@ class UserController {
       await transaction.commit()
     } catch (error) {
       await transaction.rollback()
-      throw error
+      next(error)
     }
     res.json({
       status: 'success',
       message: 'Patient vital updated successfully',
     })  
   }
-  
 }
-
 module.exports = UserController

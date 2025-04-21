@@ -2,9 +2,11 @@ const express = require('express')
 const router = express.Router()
 const upload = require('../config/multer')
 const UserController = require('../controllers/userController')
+const AuthController = require('../controllers/authController')
 const { authenticate } = require('../middleware/auth')
 
 const userController = new UserController()
+const authController = new AuthController()
 
 // Apply authentication middleware to all routes
 router.use(authenticate)
@@ -19,8 +21,9 @@ router.post('/profile/vital', userController.updatePatientVital)
 router.post('/preferences/upload', userController.uploadPreferences)
 
 // Profile picture routes
-router.post('/profile-picture/upload', 
-  upload.single('profilePicture'), 
+router.post(
+  '/profile-picture/upload',
+  upload.single('profilePicture'),
   userController.uploadProfilePicture
 )
 
@@ -28,6 +31,6 @@ router.post('/profile-picture/upload',
 router.get('/history/:id', userController.getUserHistory)
 
 // Notification routes
-router.post('/notifications/:id/read', userController.markNotificationAsRead)
+router.post('/notifications/:id/read', authController.markNotificationAsRead)
 
 module.exports = router

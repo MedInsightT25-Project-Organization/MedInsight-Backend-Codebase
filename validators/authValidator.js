@@ -2,7 +2,7 @@ const Joi = require('joi')
 
 const validateRegistration = (data) => {
   const schema = Joi.object({
-    email: Joi.string().email({ tlds: { allow: ['com'] } }).required(),
+    email: Joi.string().email().required(),
     password: Joi.string()
       .min(8)
       .pattern(
@@ -46,14 +46,30 @@ const validatePasswordReset = (data) => {
         'string.pattern.base':
           'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character',
       }),
+    confirmPassword: Joi.string()
+      .valid(Joi.ref('newPassword'))
+      .required()
+      .messages({
+        'any.only': 'Passwords do not match',
+      }),
   })
 
   return schema.validate(data)
 }
 
+
+
+const validateEmail = (data) => {
+  const schema = Joi.object({
+    email: Joi.string().email().required(),
+  })
+
+  return schema.validate(data)
+}
 module.exports = {
   validateRegistration,
   validateLogin,
   validatePasswordReset,
+  validateEmail
 
 }
