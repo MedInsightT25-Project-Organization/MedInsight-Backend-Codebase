@@ -1,8 +1,8 @@
-const { DataTypes } = require('sequelize')
-const {sequelize} = require('../../config/database')
-
+// const { DataTypes } = require('sequelize')
+// const {sequelize} = require('../../config/database')
+module.exports = (sequelize, DataTypes) => {
 const ChatAttachment = sequelize.define(
-  'chat_attachment',
+  'ChatAttachment',
   {
     id: {
       type: DataTypes.INTEGER,
@@ -42,4 +42,4 @@ ChatAttachment.associate = (models) => {
   })
 }
 
-module.exports = ChatAttachment
+return ChatAttachment}

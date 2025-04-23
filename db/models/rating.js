@@ -1,8 +1,8 @@
-const { DataTypes } = require('sequelize')
-const {sequelize} = require('../../config/database')
-
+// const { DataTypes } = require('sequelize')
+// const {sequelize} = require('../../config/database')
+module.exports = (sequelize, DataTypes) => {
 const Rating = sequelize.define(
-  'rating',
+  'Rating',
   {
     id: {
       type: DataTypes.INTEGER,
@@ -55,4 +55,4 @@ Rating.associate = (models) => {
   })
 }
 
-module.exports = Rating
+return Rating}

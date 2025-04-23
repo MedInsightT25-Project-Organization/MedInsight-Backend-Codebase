@@ -1,5 +1,6 @@
 require('dotenv').config
-const User = require('../db/models/user')
+const db = require('../db/models/index')
+const User = db.User
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const { OAuth2Client } = require('google-auth-library')

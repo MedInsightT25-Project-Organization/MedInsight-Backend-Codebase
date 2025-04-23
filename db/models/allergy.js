@@ -1,8 +1,8 @@
-const { DataTypes } = require('sequelize')
-const {sequelize} = require('../../config/database')
-
+// const { DataTypes } = require('sequelize')
+// const {sequelize} = require('../../config/database')
+module.exports = (sequelize, DataTypes) => {
 const Allergy = sequelize.define(
-  'allergy',
+  'Allergy',
   {
     id: {
       type: DataTypes.INTEGER,
@@ -43,5 +43,4 @@ Allergy.associate = (models) => {
     as: 'patient',
   })
 }
-
-module.exports = Allergy
+return Allergy}

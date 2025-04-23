@@ -1,8 +1,8 @@
-const { DataTypes } = require('sequelize')
-const {sequelize} = require('../../config/database')
-
+// const { DataTypes } = require('sequelize')
+// const { sequelize } = require('../../config/database')
+module.exports = (sequelize, DataTypes) => {
 const Service = sequelize.define(
-  'service',
+  'Service',
   {
     id: {
       type: DataTypes.INTEGER,
@@ -46,5 +46,4 @@ Service.associate = (models) => {
   // Service can be in many CartItems (define later)
   Service.hasMany(models.CartItem, { foreignKey: 'service_id' })
 }
-
-module.exports = Service
+return Service}

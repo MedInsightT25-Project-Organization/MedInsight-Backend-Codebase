@@ -1,8 +1,8 @@
-const { DataTypes } = require('sequelize')
-const {sequelize} = require('../../config/database')
-
+// const { DataTypes } = require('sequelize')
+// const {sequelize} = require('../../config/database')
+module.exports = (sequelize, DataTypes) => {
 const Prescription = sequelize.define(
-  'prescription',
+  'Prescription',
   {
     id: {
       type: DataTypes.INTEGER,
@@ -69,4 +69,4 @@ Prescription.associate = (models) => {
   })
 }
 
-module.exports = Prescription
+return Prescription}

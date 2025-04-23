@@ -1,5 +1,6 @@
-const Hospital = require('../db/models/hospital')
-const Service = require('../db/models/service')
+const db = require('../db/models/index')
+const Hospital = db.Hospital
+const Service = db.Service
 const {
   NotFoundError,
   ValidationError,

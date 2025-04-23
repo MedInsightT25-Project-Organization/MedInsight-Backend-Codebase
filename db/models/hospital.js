@@ -1,8 +1,8 @@
-const { DataTypes } = require('sequelize')
-const {sequelize} = require('../../config/database')
-
+// const { DataTypes } = require('sequelize')
+// const { sequelize } = require('../../config/database')
+module.exports = (sequelize, DataTypes) => {
 const Hospital = sequelize.define(
-  'hospital',
+  'Hospital',
   {
     id: {
       type: DataTypes.INTEGER,
@@ -74,13 +74,13 @@ const Hospital = sequelize.define(
       allowNull: true,
     },
     createdAt: {
-      type: DataTypes.DATE, 
+      type: DataTypes.DATE,
       allowNull: false,
     },
     updatedAt: {
       type: DataTypes.DATE,
       allowNull: false,
-    },  
+    },
   },
   {
     tableName: 'hospitals',
@@ -106,4 +106,4 @@ Hospital.associate = (models) => {
   Hospital.hasMany(models.Appointment, { foreignKey: 'hospital_id' })
 }
 
-module.exports = Hospital
+return  Hospital}

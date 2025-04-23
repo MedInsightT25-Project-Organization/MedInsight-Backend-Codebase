@@ -1,8 +1,9 @@
-const { DataTypes } = require('sequelize')
-const {sequelize} = require('../../config/database')
+// const { DataTypes } = require('sequelize')
+// const {sequelize} = require('../../config/database')
+module.exports = (sequelize, DataTypes) => {
 
 const UserPreference = sequelize.define(
-  'user_preference',
+  'UserPreference',
   {
     id: {
       type: DataTypes.INTEGER,
@@ -40,8 +41,8 @@ UserPreference.associate = (models) => {
   // Preference belongs to a User (1:1)
   UserPreference.belongsTo(models.User, {
     foreignKey: 'user_id',
-    as: 'user',
+    as: 'userPreferences',
   })
 }
 
-module.exports = UserPreference
+return UserPreference }

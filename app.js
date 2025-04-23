@@ -2,7 +2,7 @@ const express = require('express')
 const cors = require('cors')
 const dotenv = require('dotenv')
 const path = require('path')
-const { testConnection } = require('./config/database')
+// const { testConnection } = require('./config/database')
 const authRoutes = require('./routes/authRoutes')
 const hospitalRoutes = require('./routes/hospitalRoutes')
 const userRoutes = require('./routes/userRoutes')
@@ -10,6 +10,7 @@ const logRoutes = require('./routes/logRoutes')
 const { errorHandler, errorTypeHandler } = require('./middleware/errorHandler')
 const { NotFoundError } = require('./utils/errors')
 const { logger } = require('./utils/logger')
+const db = require('./db/models/index')
 
 // Load environment variables
 dotenv.config()
@@ -67,27 +68,38 @@ app.use((err, req, res, next) => {
 })
 
 // Handle unhandled promise rejections
-process.on('unhandledRejection', (err) => {
-  logger.error('UNHANDLED REJECTION! 💥 Shutting down...')
-  logger.error(err.name, err.message)
-  // process.exit(1)
-})
+// process.on('unhandledRejection', (err) => {
+//   logger.error('UNHANDLED REJECTION! 💥 Shutting down...')
+//   logger.error(err.name, err.message)
+//   // process.exit(1)
+// })
 
-// Handle uncaught exceptions
-process.on('uncaughtException', (err) => {
-  logger.error('UNCAUGHT EXCEPTION! 💥 Shutting down...')
-  logger.error(err.name, err.message)
-  // process.exit(1)
-})
+// // Handle uncaught exceptions
+// process.on('uncaughtException', (err) => {
+//   logger.error('UNCAUGHT EXCEPTION! 💥 Shutting down...')
+//   logger.error(err.name, err.message)
+//   // process.exit(1)
+// })
 
 // Start server
 app.listen(port, async () => {
   // Test database connection
-  await testConnection()
+   try {
+     await db.sequelize.authenticate()
+     console.log('Database connection established successfully')
 
-  logger.info(
-    `Server is running on port ${port} in ${process.env.NODE_ENV} mode`
-  )
+     logger.info(
+       `Server is running on port ${port} in ${process.env.NODE_ENV} mode`
+     )
+   } catch (error) {
+     console.error('Unable to connect to the database:', error)
+     process.exit(1)
+   }
+  // await testConnection()
+
+  // logger.info(
+  //   `Server is running on port ${port} in ${process.env.NODE_ENV} mode`
+  // )
 })
 
 module.exports = app

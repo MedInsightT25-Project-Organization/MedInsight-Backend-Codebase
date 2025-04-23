@@ -1,8 +1,8 @@
-const { DataTypes } = require('sequelize')
-const {sequelize} = require('../../config/database')
-
+// const { DataTypes } = require('sequelize')
+// const {sequelize} = require('../../config/database')
+module.exports = (sequelize, DataTypes) => {
 const Conversation = sequelize.define(
-  'conversation',
+  'Conversation',
   {
     id: {
       type: DataTypes.INTEGER,
@@ -50,4 +50,4 @@ Conversation.associate = (models) => {
   })
 }
 
-module.exports = Conversation
+return  Conversation}

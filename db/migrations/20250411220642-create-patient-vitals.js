@@ -20,6 +20,10 @@ module.exports = {
         type: Sequelize.DECIMAL(5, 2), // Supports up to 999.99 kg/lbs
         allowNull: true,
       },
+      body_temperature: {
+        type: DataTypes.DECIMAL(4, 1),
+        allowNull: true
+      },
       recorded_at: {
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
