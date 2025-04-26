@@ -6,6 +6,8 @@ node_modules
 
 # logs
 logs
+logs/error.log
+logs/combined.log
 
 # sql files
 *.sql
