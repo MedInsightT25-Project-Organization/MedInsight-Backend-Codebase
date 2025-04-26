@@ -15,11 +15,12 @@ router.post('/google', authController.googleLogin)
 router.post('/refresh-token', authController.refreshToken)
 router.post('/forgot-password', rateLimiter, authController.forgotPassword)
 router.post('/reset-password', authController.resetPassword)
+
+
+// Protected routes
 router.post('/send-verification-email', authenticate, authController.sendEmailVerification)
 router.post('/verify-email', authController.verifyEmail)
 router.post('/change-password', authenticate, authController.changePassword)
-
-// Protected routes
 router.post('/logout', authenticate, authController.logout)
 router.get('/session', authenticate, authController.getSession)
 

@@ -8,31 +8,26 @@ const userController = new UserController()
 
 // Apply authentication middleware to all routes
 router.use(authenticate)
-router.use(isPatient)
 
 // Profile routes
 router.get('/profile', userController.getProfile)
 router.get('/profile/:id', userController.getProfileById)
-router.patch('/profile/update', userController.updateProfile)
-router.post('/profile/create', userController.createProfile)
-router.post('/vitals/create', userController.createPatientVital)
-router.patch('/vitals/update', userController.updatePatientVital)
+router.patch('/profile/update', isPatient, userController.updateProfile)
+router.post('/profile/create', isPatient, userController.createProfile)
+router.post('/vitals/create', isPatient, userController.createPatientVital)
+router.patch('/vitals/update', isPatient, userController.updatePatientVital)
 
 // Preferences routes
-router.post('/preferences/create', userController.createPreferences)
-router.patch('/preferences/update', userController.updatePreferences)
+router.post('/preferences/create', isPatient, userController.createPreferences)
+router.patch('/preferences/update', isPatient, userController.updatePreferences)
 
 // Profile picture routes
-router.post(
-  '/profile-picture/upload',
-  upload.single('profilePicture'),
-  userController.uploadProfilePicture
-)
+router.post('/profile-picture/upload', isPatient, upload.single('profilePicture'), userController.uploadProfilePicture)
 
 // History routes
-router.get('/history/:id', userController.getUserHistory)
+router.get('/history/:id', isPatient, userController.getUserHistory)
 
 // Notification routes
-router.post('/notifications/:id/read', userController.markNotificationAsRead)
+router.post('/notifications/:id/read', isPatient, userController.markNotificationAsRead)
 
 module.exports = router
