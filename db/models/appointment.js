@@ -1,8 +1,8 @@
-const { DataTypes } = require('sequelize')
-const {sequelize} = require('../../config/database')
-
+// const { DataTypes } = require('sequelize')
+// const { sequelize } = require('../../config/database')
+module.exports = (sequelize, DataTypes) => {
 const Appointment = sequelize.define(
-  'appointment',
+  'Appointment',
   {
     id: {
       type: DataTypes.INTEGER,
@@ -54,7 +54,13 @@ Appointment.associate = (models) => {
   // Appointment belongs to a Hospital
   Appointment.belongsTo(models.Hospital, {
     foreignKey: 'hospital_id',
-    as: 'hospital',
+    as: 'appointments',
+  })
+
+  //Appointment to MedicalRecord
+  Appointment.hasOne(models.MedicalRecord, {
+    foreignKey: 'appointment_id',
+    as: 'medicalRecord',
   })
 
   // Appointment optionally belongs to a Service
@@ -67,4 +73,4 @@ Appointment.associate = (models) => {
   Appointment.hasOne(models.Payment, { foreignKey: 'appointment_id' })
 }
 
-module.exports = Appointment
+return Appointment}

@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken')
-const { User } = require('../db/models/user')
+const db = require('../db/models/index')
+const User = db.User
 const { AuthenticationError, AuthorizationError } = require('../utils/errors')
 
 const authenticate = async (req, res, next) => {
@@ -10,6 +11,10 @@ const authenticate = async (req, res, next) => {
     }
 
     const token = authHeader.split(' ')[1]
+    console.log('Token:', token)
+    if (!token) {
+      throw new AuthenticationError('No token provided')
+    }
 
     // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET)
@@ -28,23 +33,25 @@ const authenticate = async (req, res, next) => {
     next()
   } catch (error) {
     console.error('Authentication error:', error)
-    throw new AuthenticationError('Invalid token')
+    next(new AuthenticationError('Invalid token'))
   }
 }
 
 const isPatient = (req, res, next) => {
-  if (req.user.role !== 'patient') {
-  throw new AuthorizationError('Unauthorized')
-  }
-  next()
-}
-
-const isHospitalAdmin = (req, res, next) => {
-  if (req.user.role !== 'hospital_admin') {
+  if (req.user.role !== 'patient' && req.user.role !== 'super_admin') {
     throw new AuthorizationError('Unauthorized')
   }
   next()
 }
+
+
+const isHospitalAdmin = (req, res, next) => {
+  if (req.user.role !== 'hospital_admin' && req.user.role !== 'super_admin') {
+    throw new AuthorizationError('Unauthorized')
+  }
+  next()
+}
+
 
 const isSuperAdmin = (req, res, next) => {
   if (req.user.role !== 'super_admin') {

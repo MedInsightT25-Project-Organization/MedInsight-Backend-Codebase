@@ -1,8 +1,8 @@
-const { DataTypes } = require('sequelize')
-const {sequelize} = require('../../config/database')
-
+// const { DataTypes } = require('sequelize')
+// const {sequelize} = require('../../config/database')
+module.exports = (sequelize, DataTypes) => {
 const Cart = sequelize.define(
-  'cart',
+  'Cart',
   {
     id: {
       type: DataTypes.INTEGER,
@@ -50,4 +50,4 @@ Cart.associate = (models) => {
   })
 }
 
-module.exports = Cart
+return  Cart}

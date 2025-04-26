@@ -1,8 +1,8 @@
-const { DataTypes } = require('sequelize')
-const {sequelize} = require('../../config/database')
-
+// const { DataTypes } = require('sequelize')
+// const {sequelize} = require('../../config/database')
+module.exports = (sequelize, DataTypes) => {
 const Notification = sequelize.define(
-  'notification',
+  'Notification',
   {
     id: {
       type: DataTypes.INTEGER,
@@ -40,6 +40,11 @@ Notification.associate = (models) => {
     foreignKey: 'user_id',
     as: 'user',
   })
+  // Notification belongs to a Hospital
+  // Notification.belongsTo(models.Hospital, {
+  //   foreignKey: 'created_by',
+  //   as: 'hospital',
+  // })
 }
 
-module.exports = Notification
+return Notification}

@@ -1,8 +1,8 @@
-const { DataTypes } = require('sequelize')
-const {sequelize} = require('../../config/database')
-
+// const { DataTypes } = require('sequelize')
+// const {sequelize} = require('../../config/database')
+module.exports = (sequelize, DataTypes) => {
 const AdminBroadcast = sequelize.define(
-  'admin_broadcast',
+  'AdminBroadcast',
   {
     id: {
       type: DataTypes.INTEGER,
@@ -38,4 +38,4 @@ const AdminBroadcast = sequelize.define(
 )
 
 // No direct relationships needed (system-wide broadcasts)
-module.exports = AdminBroadcast
+return AdminBroadcast}

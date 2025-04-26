@@ -73,12 +73,6 @@ const validateHospital = (data) => {
       .messages({
         'string.pattern.base': 'Work hours must be in the format HH:MM-HH:MM',
       }),
-
-    createdBy: Joi.number().integer().required().messages({
-      'number.base': 'Created by must be a number',
-      'number.integer': 'Created by must be an integer',
-      'any.required': 'Created by is required',
-    }),
   })
 
   return schema.validate(data, {
@@ -166,7 +160,34 @@ const validateHospitalUpdate = (data) => {
   })
 }
 
+
+
+const validateHospitalService = (data) => {
+  const schema = Joi.object({
+    name: Joi.string().required().min(3).max(100).messages({
+      'string.empty': 'Service name is required',
+      'string.min': 'Service name must be at least 3 characters long',
+      'string.max': 'Service name cannot exceed 100 characters',
+    }),
+    description: Joi.string().required().min(10).max(500).messages({
+      'string.empty': 'Service description is required',
+      'string.min': 'Service description must be at least 10 characters long',
+      'string.max': 'Service description cannot exceed 500 characters',
+    }),
+    price: Joi.number().required().min(0).messages({
+      'number.empty': 'Service price is required',
+      'number.min': 'Service price must be a positive number',
+    }),
+  })
+
+  return schema.validate(data, {
+    abortEarly: false,
+    stripUnknown: true,
+  })
+}
+
 module.exports = {
   validateHospital,
   validateHospitalUpdate,
+  validateHospitalService,
 }

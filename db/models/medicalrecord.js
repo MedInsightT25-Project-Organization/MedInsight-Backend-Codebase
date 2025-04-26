@@ -1,8 +1,8 @@
-const { DataTypes } = require('sequelize')
-const {sequelize} = require('../../config/database')
-
+// const { DataTypes } = require('sequelize')
+// const {sequelize} = require('../../config/database')
+module.exports = (sequelize, DataTypes) => {
 const MedicalRecord = sequelize.define(
-  'medical_record',
+  'MedicalRecord',
   {
     id: {
       type: DataTypes.INTEGER,
@@ -48,4 +48,4 @@ MedicalRecord.associate = (models) => {
   })
 }
 
-module.exports = MedicalRecord
+return  MedicalRecord}

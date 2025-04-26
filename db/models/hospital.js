@@ -1,8 +1,8 @@
-const { DataTypes } = require('sequelize')
-const {sequelize} = require('../../config/database')
-
+// const { DataTypes } = require('sequelize')
+// const { sequelize } = require('../../config/database')
+module.exports = (sequelize, DataTypes) => {
 const Hospital = sequelize.define(
-  'hospital',
+  'Hospital',
   {
     id: {
       type: DataTypes.INTEGER,
@@ -29,13 +29,6 @@ const Hospital = sequelize.define(
     contactNumber: {
       type: DataTypes.STRING,
       allowNull: false,
-    },
-    contactEmail: {
-      type: DataTypes.STRING,
-      field: 'contact_email',
-      validate: {
-        isEmail: true,
-      },
     },
     state: {
       type: DataTypes.STRING,
@@ -69,18 +62,37 @@ const Hospital = sequelize.define(
       field: 'created_by',
       allowNull: false,
     },
+    hospitalPicture: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    registeredNumber: {
+      type: DataTypes.STRING,
+      field: 'registered_number',
+      allowNull: true,
+    },
+    registrationCertificate: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    isVerified: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
     deletedAt: {
       type: DataTypes.DATE,
       allowNull: true,
     },
     createdAt: {
-      type: DataTypes.DATE, 
+      type: DataTypes.DATE,
       allowNull: false,
+      defaultValue: DataTypes.NOW,
     },
     updatedAt: {
       type: DataTypes.DATE,
       allowNull: false,
-    },  
+      defaultValue: DataTypes.NOW,
+    },
   },
   {
     tableName: 'hospitals',
@@ -98,12 +110,18 @@ Hospital.associate = (models) => {
   // Hospital belongs to a User (hospital_admin)
   Hospital.belongsTo(models.User, {
     foreignKey: 'created_by',
-    as: 'admin',
+    as: 'hospitalAdmin',
   })
 
   // Hospital has many Services/Appointments (define later)
-  Hospital.hasMany(models.Service, { foreignKey: 'hospital_id' })
-  Hospital.hasMany(models.Appointment, { foreignKey: 'hospital_id' })
+  Hospital.hasMany(models.Service, { foreignKey: 'hospital_id' , as: 'services' })
+  Hospital.hasMany(models.Appointment, { foreignKey: 'hospital_id' , as: 'appointments' })
+  Hospital.hasMany(models.Cart, { foreignKey: 'hospital_id' , as: 'carts' })
+  Hospital.hasMany(models.Conversation, { foreignKey: 'hospital_id' , as: 'conversations' })
+  Hospital.hasMany(models.Message, { foreignKey: 'hospital_id' , as: 'messages' })
+  Hospital.hasMany(models.CartItem, { foreignKey: 'hospital_id' , as: 'cartItems' })
+  Hospital.hasMany(models.Rating, { foreignKey: 'hospital_id' , as: 'ratings' })
+  // Hospital.hasMany(models.Notification, { foreignKey: 'created_by' , as: 'notifications' })
 }
 
-module.exports = Hospital
+return  Hospital}

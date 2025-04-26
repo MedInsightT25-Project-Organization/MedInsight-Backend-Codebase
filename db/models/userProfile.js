@@ -1,8 +1,8 @@
-const { DataTypes } = require('sequelize')
-const {sequelize} = require('../../config/database')
-
+// const { DataTypes } = require('sequelize')
+// const { sequelize } = require('../../config/database')
+module.exports = (sequelize, DataTypes) => {
 const UserProfile = sequelize.define(
-  'user_profile',
+  'UserProfile',
   {
     id: {
       type: DataTypes.INTEGER,
@@ -62,7 +62,7 @@ const UserProfile = sequelize.define(
     nextOfKinContactNumber: {
       type: DataTypes.STRING,
       allowNull: true,
-    },    
+    },
     nextOfKinRelationship: {
       type: DataTypes.STRING,
       allowNull: true,
@@ -84,11 +84,13 @@ const UserProfile = sequelize.define(
     createdAt: {
       type: DataTypes.DATE,
       allowNull: false,
+      defaultValue: DataTypes.NOW,
     },
     updatedAt: {
       type: DataTypes.DATE,
       allowNull: false,
-    },    
+      defaultValue: DataTypes.NOW,
+    },
   },
   {
     tableName: 'user_profiles',
@@ -104,8 +106,13 @@ UserProfile.associate = (models) => {
   // Profile belongs to a User (1:1)
   UserProfile.belongsTo(models.User, {
     foreignKey: 'user_id',
-    as: 'user',
+    as: 'userProfile',
+  })
+  // Profile has many Research Requests (1:N)
+  UserProfile.hasMany(models.ResearchRequest, {
+    foreignKey: 'user_id',
+    as: 'researchRequests',
   })
 }
 
-module.exports = UserProfile
+return UserProfile }  

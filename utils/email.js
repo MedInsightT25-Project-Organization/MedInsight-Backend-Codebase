@@ -109,7 +109,7 @@ const sendPasswordResetEmail = async (email, token) => {
 
 const sendVerificationEmail = async (email, token) => {
   try {
-    const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${token}`
+    const verificationUrl = `${process.env.FRONTEND_URL}/api/auth/verify-email?token=${token}`
 
     const mailOptions = {
       from: process.env.SMTP_USER,
@@ -118,7 +118,8 @@ const sendVerificationEmail = async (email, token) => {
       html: `
         <h1>Email Verification</h1>
         <p>Click the link below to verify your email:</p>
-        <a href="${verificationUrl}">Verify Email</a>
+        <a href="${verificationUrl}">Verification Email Link</a>
+        <p>This link will expire in 1 hour. Here is the token: ${token}</p>
         <p>If you did not request this, please ignore this email.</p>
       `,
     }

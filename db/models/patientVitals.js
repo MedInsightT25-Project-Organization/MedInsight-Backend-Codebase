@@ -1,8 +1,8 @@
-const { DataTypes } = require('sequelize')
-const {sequelize} = require('../../config/database')
-
+// const { DataTypes } = require('sequelize')
+// const {sequelize} = require('../../config/database')
+module.exports = (sequelize, DataTypes) => {
 const PatientVitals = sequelize.define(
-  'patient_vitals',
+  'PatientVitals',
   {
     id: {
       type: DataTypes.INTEGER,
@@ -20,8 +20,13 @@ const PatientVitals = sequelize.define(
     weight: {
       type: DataTypes.DECIMAL(5, 2),
     },
+    bodyTemperature: {
+      type: DataTypes.DECIMAL(4, 1),
+      field: 'body_temperature',
+    },
     recordedAt: {
       type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
       field: 'recorded_at',
     },
     patientId: {
@@ -44,8 +49,8 @@ PatientVitals.associate = (models) => {
   // Vitals belong to a Patient (User)
   PatientVitals.belongsTo(models.User, {
     foreignKey: 'patient_id',
-    as: 'patient',
+    as: 'vitals',
   })
 }
 
-module.exports = PatientVitals
+return PatientVitals}
