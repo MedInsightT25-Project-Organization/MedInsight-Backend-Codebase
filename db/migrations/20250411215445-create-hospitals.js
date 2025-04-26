@@ -67,6 +67,22 @@ module.exports = {
         },
         allowNull: false,
       },
+      registeredNumber: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      registrationCertificate: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      isVerified: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+      },
+      hospitalPicture: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
       created_at: {
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),

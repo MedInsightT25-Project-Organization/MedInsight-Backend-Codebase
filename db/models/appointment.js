@@ -57,6 +57,12 @@ Appointment.associate = (models) => {
     as: 'hospital',
   })
 
+  //Appointment to MedicalRecord
+  Appointment.hasOne(models.MedicalRecord, {
+    foreignKey: 'appointment_id',
+    as: 'medicalRecord',
+  })
+
   // Appointment optionally belongs to a Service
   Appointment.belongsTo(models.Service, {
     foreignKey: 'service_id',

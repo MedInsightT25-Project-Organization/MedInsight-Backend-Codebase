@@ -102,9 +102,14 @@ module.exports = (sequelize, DataTypes) => {
     })
     User.hasMany(models.Rating, { foreignKey: 'patient_id' })
     User.hasMany(models.ResearchRequest, { foreignKey: 'user_id' })
+    User.hasMany(models.Cart, { foreignKey: 'patient_id' })
+    User.hasMany(models.CartItem, { foreignKey: 'patient_id' })
+    User.hasMany(models.Conversation, { foreignKey: 'patient_id' })
 
     // Hospital Admin Relationship
-    User.hasMany(models.Hospital, { foreignKey: 'created_by' })
+    User.hasMany(models.Hospital, { foreignKey: 'created_by', as: 'hospitalAdmin' })
+
+
   }
 
   return User

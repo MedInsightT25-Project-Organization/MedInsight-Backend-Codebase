@@ -40,6 +40,11 @@ Notification.associate = (models) => {
     foreignKey: 'user_id',
     as: 'user',
   })
+  // Notification belongs to a Hospital
+  Notification.belongsTo(models.Hospital, {
+    foreignKey: 'created_by',
+    as: 'hospital',
+  })
 }
 
 return Notification}

@@ -1,19 +1,41 @@
+const { attempt } = require('joi')
 const db = require('../db/models/index')
 const Service = db.Service
 const Hospital = db.Hospital
+const User = db.User
 const {
   NotFoundError,
   ValidationError,
   AuthorizationError,
 } = require('../utils/errors')
+const { logger } = require('../utils/logger')
+const { validateHospitalService } = require('../validators/hospitalValidator')
 
 class ServiceController {
   // Add a new service to a hospital
-  async createService(req, res, next) {
+  async createHospitalServices(req, res, next) {
     try {
-      const hospital = await Hospital.findByPk(req.params.hospitalId)
+      // Validate request body
+      const data = req.body
+      const { error } = validateHospitalService(data)
+      if (error) {
+        return next(new ValidationError(error.details[0].message))
+      }
+      const hospitalId = req.params.hospitalId
+
+      // Get the hospital by ID and include the hospital admin
+      const hospital = await Hospital.findByPk(hospitalId, {
+        include: [
+          {
+            model: User,
+            as: 'hospitalAdmin',
+            attributes: ['id', 'role', 'email'],
+          },
+        ],
+      })
+
       if (!hospital) {
-        throw new NotFoundError('Hospital not found')
+        return next(new NotFoundError('Hospital not found'))
       }
 
       // Check if user is the hospital admin
@@ -24,14 +46,18 @@ class ServiceController {
       }
 
       const serviceData = {
-        ...req.body,
+        ...data,
         hospitalId: hospital.id,
       }
 
       const service = await Service.create(serviceData)
+      logger.info(
+        `Service created successfully for hospital ID: ${hospital.id}`
+      )
 
       res.status(201).json({
         status: 'success',
+        message: 'Service created successfully',
         data: service,
       })
     } catch (error) {
@@ -49,6 +75,16 @@ class ServiceController {
 
       const services = await Service.findAll({
         where: { hospitalId: hospital.id },
+        include: [
+          {
+            model: Hospital,
+            as: 'hospital',
+            attributes: ['id', 'name', 'address'],
+          },
+        ],
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
       })
 
       res.status(200).json({
@@ -61,17 +97,74 @@ class ServiceController {
     }
   }
 
+  // Get a single service by ID
+
+  async getHospitalServicesById(req, res, next) {
+   try {
+    const { hospitalId, serviceId } = req.params
+     const hospital = await Hospital.findByPk(hospitalId)
+     if (!hospital) {
+       throw new NotFoundError('Hospital not found')
+     }
+
+     const service = await Service.findOne({
+       where: { hospitalId: hospital.id,
+          id: serviceId },
+       include: [
+          {
+            model: Hospital,
+            as: 'hospital',
+            attributes: ['id', 'name', 'address'],
+          },
+        ],
+        attributes: {
+          exclude: ['createdAt', 'updatedAt'],
+        },
+     })
+
+     res.status(200).json({
+       status: 'success',
+       message: 'Service retrieved successfully',
+       data: service,
+     })
+   } catch (error) {
+     next(error)
+   }
+  }
+
   // Update a service
-  async updateService(req, res, next) {
+  async updateHospitalServicesById(req, res, next) {
     try {
-      const service = await Service.findByPk(req.params.id, {
+      // Validate request body
+      const data = req.body
+      const { error } = validateHospitalService(data)
+      if (error) {
+        return next(new ValidationError(error.details[0].message))
+      }
+      const { hospitalId, serviceId } = req.params
+      const hospital = await Hospital.findByPk(hospitalId, {
+        include: [
+          {
+            model: User,
+            as: 'hospitalAdmin',
+            attributes: ['id', 'role', 'email'],
+          },
+        ],
+      })
+      if (!hospital) {
+        return next(new NotFoundError('Hospital not found'))
+      }
+      const service = await Service.findByPk(serviceId, {
+        where: { hospitalId: hospital.id },
         include: [
           {
             model: Hospital,
             as: 'hospital',
+            attributes: ['id', 'name', 'address', 'createdBy'],
           },
         ],
       })
+  
 
       if (!service) {
         throw new NotFoundError('Service not found')
@@ -84,10 +177,14 @@ class ServiceController {
         )
       }
 
-      await service.update(req.body)
+      await service.update(data)
+      logger.info(
+        `Service updated successfully for hospital ID: ${hospital.id}`
+      )
 
       res.status(200).json({
         status: 'success',
+        message: 'Service updated successfully',
         data: service,
       })
     } catch (error) {
@@ -98,11 +195,14 @@ class ServiceController {
   // Delete a service
   async deleteService(req, res, next) {
     try {
-      const service = await Service.findByPk(req.params.id, {
+      const { hospitalId, serviceId } = req.params
+      const service = await Service.findByPk(serviceId, {
+        where: { hospitalId: hospitalId },
         include: [
           {
             model: Hospital,
             as: 'hospital',
+            attributes: ['id', 'name', 'address', 'createdBy'],
           },
         ],
       })
@@ -119,9 +219,13 @@ class ServiceController {
       }
 
       await service.destroy()
+      logger.info(
+        `Service deleted successfully for hospital ID: ${service.hospital.id}`
+      )
 
       res.status(204).json({
         status: 'success',
+        message: 'Service deleted successfully',
         data: null,
       })
     } catch (error) {

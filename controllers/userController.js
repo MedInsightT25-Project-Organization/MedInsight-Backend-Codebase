@@ -5,6 +5,8 @@ const UserProfile = db.UserProfile
 const UserPreference = db.UserPreference
 const PatientVitals = db.PatientVitals
 const Notification = db.Notification
+const Appointment = db.Appointment
+const MedicalRecord = db.MedicalRecord
 const { logger } = require('../utils/logger')
 const {
   ValidationError,
@@ -48,6 +50,30 @@ class UserController {
               exclude: ['created_at', 'updated_at', 'user_id'],
             },
           },
+          {
+            model: Appointment,
+            as: 'appointments',
+            attributes: {
+              exclude: ['created_at', 'updated_at', 'user_id'],
+            },
+            include: [
+              {
+                model: MedicalRecord,
+                as: 'medicalRecord',
+                attributes: {
+                  exclude: ['created_at', 'updated_at', 'user_id'],
+                },
+              },
+            ],
+          },
+          {
+            model: Notification,
+            as: 'notifications',
+            attributes: {
+              exclude: ['created_at', 'updated_at', 'user_id'],
+            },
+            
+          }
         ],
         attributes: {
           exclude: ['password_hash', 'created_at', 'updated_at', 'deleted_at'],
@@ -195,7 +221,7 @@ class UserController {
       // Validate incoming data
       const { error } = validateUserProfile(data)
       if (error) {
-        throw new ValidationError(error.details[0].message)
+        throw next (new ValidationError(error.details[0].message))
       }
 
       // Get the user's profile

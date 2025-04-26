@@ -7,7 +7,7 @@ const { authenticate } = require('../middleware/auth')
 router.get('/', authenticate, async (req, res) => {
   try {
     // Check if user is admin
-    if (req.user.role !== 'admin') {
+    if (req.user.role !== 'super_admin') {
       return res.status(403).json({ error: 'Access denied. Admin only.' })
     }
 
@@ -21,10 +21,10 @@ router.get('/', authenticate, async (req, res) => {
 })
 
 // Clear logs (protected route, admin only)
-router.delete('/', authenticate, async (req, res) => {
+router.delete('/delete', authenticate, async (req, res) => {
   try {
     // Check if user is admin
-    if (req.user.role !== 'admin') {
+    if (req.user.role !== 'super_admin') {
       return res.status(403).json({ error: 'Access denied. Admin only.' })
     }
 

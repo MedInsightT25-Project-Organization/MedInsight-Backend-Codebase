@@ -30,13 +30,6 @@ const Hospital = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    contactEmail: {
-      type: DataTypes.STRING,
-      field: 'contact_email',
-      validate: {
-        isEmail: true,
-      },
-    },
     state: {
       type: DataTypes.STRING,
       allowNull: true,
@@ -69,6 +62,23 @@ const Hospital = sequelize.define(
       field: 'created_by',
       allowNull: false,
     },
+    hospitalPicture: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    registeredNumber: {
+      type: DataTypes.STRING,
+      field: 'registered_number',
+      allowNull: true,
+    },
+    registrationCertificate: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    isVerified: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
     deletedAt: {
       type: DataTypes.DATE,
       allowNull: true,
@@ -76,10 +86,12 @@ const Hospital = sequelize.define(
     createdAt: {
       type: DataTypes.DATE,
       allowNull: false,
+      defaultValue: DataTypes.NOW,
     },
     updatedAt: {
       type: DataTypes.DATE,
       allowNull: false,
+      defaultValue: DataTypes.NOW,
     },
   },
   {
@@ -98,12 +110,18 @@ Hospital.associate = (models) => {
   // Hospital belongs to a User (hospital_admin)
   Hospital.belongsTo(models.User, {
     foreignKey: 'created_by',
-    as: 'admin',
+    as: 'hospitalAdmin',
   })
 
   // Hospital has many Services/Appointments (define later)
-  Hospital.hasMany(models.Service, { foreignKey: 'hospital_id' })
-  Hospital.hasMany(models.Appointment, { foreignKey: 'hospital_id' })
+  Hospital.hasMany(models.Service, { foreignKey: 'hospital_id' , as: 'services' })
+  Hospital.hasMany(models.Appointment, { foreignKey: 'hospital_id' , as: 'appointments' })
+  Hospital.hasMany(models.Cart, { foreignKey: 'hospital_id' , as: 'carts' })
+  Hospital.hasMany(models.Conversation, { foreignKey: 'hospital_id' , as: 'conversations' })
+  Hospital.hasMany(models.Message, { foreignKey: 'hospital_id' , as: 'messages' })
+  Hospital.hasMany(models.CartItem, { foreignKey: 'hospital_id' , as: 'cartItems' })
+  Hospital.hasMany(models.Rating, { foreignKey: 'hospital_id' , as: 'ratings' })
+  Hospital.hasMany(models.Notification, { foreignKey: 'created_by' , as: 'notifications' })
 }
 
 return  Hospital}

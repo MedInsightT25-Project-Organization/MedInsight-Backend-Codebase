@@ -108,6 +108,11 @@ UserProfile.associate = (models) => {
     foreignKey: 'user_id',
     as: 'userProfile',
   })
+  // Profile has many Research Requests (1:N)
+  UserProfile.hasMany(models.ResearchRequest, {
+    foreignKey: 'user_id',
+    as: 'researchRequests',
+  })
 }
 
 return UserProfile }  
