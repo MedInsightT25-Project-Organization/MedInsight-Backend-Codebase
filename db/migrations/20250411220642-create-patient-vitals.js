@@ -21,7 +21,7 @@ module.exports = {
         allowNull: true,
       },
       body_temperature: {
-        type: DataTypes.DECIMAL(4, 1),
+        type: Sequelize.DECIMAL(4, 1),
         allowNull: true
       },
       recorded_at: {

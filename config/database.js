@@ -10,8 +10,14 @@ const sequelize = new Sequelize(
   config.password,
   {
     host: config.host,
-    port: config.port || 5432,
+    port: config.port,
     dialect: config.dialect,
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
+    },
     logging: (msg) => console.log(msg),
     pool: {
       max: 5,
