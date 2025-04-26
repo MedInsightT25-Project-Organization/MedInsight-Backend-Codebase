@@ -98,7 +98,7 @@ class HospitalController {
       })
 
       if (!hospital) {
-        throw next(new NotFoundError('Hospital not found.'))
+        return next(new NotFoundError('Hospital not found.'))
       }
 
       // Update the hospital details
@@ -180,7 +180,7 @@ class HospitalController {
       })
 
       if (!hospital) {
-        throw new NotFoundError('Hospital not found')
+        return next (new NotFoundError('Hospital not found'))
       }
 
       res.status(200).json({
@@ -199,7 +199,7 @@ class HospitalController {
 
       const user = await User.findByPk(userId)
       if (!user) {
-        throw new NotFoundError('User not found')
+        return next (new NotFoundError('User not found'))
       }
       const hospitalId = user.createdBy 
 
@@ -226,7 +226,7 @@ class HospitalController {
       })
 
       if (!hospital) {
-        throw new NotFoundError('Hospital not found')
+        return next (new NotFoundError('Hospital not found'))
       }
 
       res.status(200).json({
@@ -261,7 +261,7 @@ class HospitalController {
       })
 
       if (!hospital) {
-        throw new ValidationError('User profile not found')
+        return next (new ValidationError('User profile not found'))
       }
 
       await hospital.update({
@@ -297,7 +297,7 @@ class HospitalController {
       })
 
       if (!notification) {
-        throw new ValidationError('Notification not found')
+        return next (new ValidationError('Notification not found'))
       }
 
       await notification.update({
@@ -323,7 +323,7 @@ class HospitalController {
     try {
       const hospital = await Hospital.findByPk(req.params.id)
       if (!hospital) {
-        throw new NotFoundError('Hospital not found')
+        return next (new NotFoundError('Hospital not found'))
       }
 
       // Only super admin can delete hospitals

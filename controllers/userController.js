@@ -72,7 +72,7 @@ class UserController {
             attributes: {
               exclude: ['created_at', 'updated_at', 'user_id'],
             },
-            
+
           }
         ],
         attributes: {
@@ -81,7 +81,7 @@ class UserController {
       })
 
       if (!user) {
-        throw new ValidationError('User not found')
+        return next (new ValidationError('User not found'))
       }
 
       logger.info(`Profile retrieved for user: ${userId}`)
@@ -133,7 +133,7 @@ class UserController {
       })
 
       if (!user) {
-        throw new ValidationError('User not found')
+        return next (new ValidationError('User not found'))
       }
 
       logger.info(`Profile retrieved for user: ${userId}`)
@@ -231,7 +231,7 @@ class UserController {
       })
 
       if (!userProfile) {
-        throw new NotFoundError('User profile not found.')
+        return next (new NotFoundError('User profile not found.'))
       }
 
       // Update the profile
@@ -263,7 +263,7 @@ class UserController {
       const data = req.body
       const { error } = validateUserPreference(data)
       if (error) {
-        throw new ValidationError(error.details[0].message)
+        return next (new ValidationError(error.details[0].message))
       }
 
       const userId = req.user.id
@@ -273,9 +273,9 @@ class UserController {
         where: { user_id: userId },
       })
       if (existing) {
-        throw new ValidationError(
+       return next (new ValidationError(
           'Preferences already exist. Use update instead.'
-        )
+        ))
       }
 
       const userPreference = await UserPreference.create({
@@ -300,7 +300,7 @@ class UserController {
       const data = req.body
       const { error } = validateUserPreference(data)
       if (error) {
-        throw new ValidationError(error.details[0].message)
+        return next (new ValidationError(error.details[0].message))
       }
 
       const userId = req.user.id
@@ -309,9 +309,9 @@ class UserController {
         where: { user_id: userId },
       })
       if (!userPreference) {
-        throw new ValidationError(
+         return next (new ValidationError(
           'Preferences not found. Please create them first.'
-        )
+        ))
       }
 
       await userPreference.update(data)
@@ -332,7 +332,7 @@ class UserController {
       const userId = req.user.id
 
       if (!req.file) {
-        throw new ValidationError('No file uploaded')
+        return next (new ValidationError('No file uploaded'))
       }
 
       // Upload to Cloudinary
@@ -350,7 +350,7 @@ class UserController {
       })
 
       if (!userProfile) {
-        throw new ValidationError('User profile not found')
+        return next (new ValidationError('User profile not found'))
       }
 
       await userProfile.update({
@@ -381,7 +381,7 @@ class UserController {
 
       // Ensure user can only access their own history
       if (req.user.id !== parseInt(userId) && req.user.role !== 'super_admin') {
-        throw new ValidationError('Unauthorized to access this history')
+        return next (new ValidationError('Unauthorized to access this history'))
       }
 
       const offset = (page - 1) * limit
@@ -420,7 +420,7 @@ class UserController {
       })
 
       if (!history) {
-        throw new ValidationError('User not found')
+        return next(new ValidationError('User not found'))
       }
 
       logger.info(`History retrieved for user: ${userId}`)
@@ -451,7 +451,7 @@ class UserController {
       })
 
       if (!notification) {
-        throw new ValidationError('Notification not found')
+        throw next (new ValidationError('Notification not found'))
       }
 
       await notification.update({
@@ -491,7 +491,7 @@ class UserController {
       })
 
       if (existingVital) {
-        throw new ValidationError('Vitals already exist. Use update instead.')
+        return next (new ValidationError('Vitals already exist. Use update instead.'))
       }
 
       await PatientVitals.create(data, { transaction })
@@ -524,7 +524,7 @@ class UserController {
       })
 
       if (!patientVital) {
-        throw new ValidationError('Vitals not found. Create first.')
+      return next (new ValidationError('Vitals not found. Create first.'))
       }
 
       await patientVital.update(data, { transaction })

@@ -68,18 +68,18 @@ app.use((err, req, res, next) => {
 })
 
 // Handle unhandled promise rejections
-// process.on('unhandledRejection', (err) => {
-//   logger.error('UNHANDLED REJECTION! 💥 Shutting down...')
-//   logger.error(err.name, err.message)
-//   // process.exit(1)
-// })
+process.on('unhandledRejection', (err) => {
+  logger.error('UNHANDLED REJECTION! 💥 Shutting down...')
+  logger.error(err.name, err.message)
+  // process.exit(1)
+})
 
 // // Handle uncaught exceptions
-// process.on('uncaughtException', (err) => {
-//   logger.error('UNCAUGHT EXCEPTION! 💥 Shutting down...')
-//   logger.error(err.name, err.message)
-//   // process.exit(1)
-// })
+process.on('uncaughtException', (err) => {
+  logger.error('UNCAUGHT EXCEPTION! 💥 Shutting down...')
+  logger.error(err.name, err.message)
+  // process.exit(1)
+})
 
 // Start server
 app.listen(port, async () => {
