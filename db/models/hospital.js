@@ -121,7 +121,7 @@ Hospital.associate = (models) => {
   Hospital.hasMany(models.Message, { foreignKey: 'hospital_id' , as: 'messages' })
   Hospital.hasMany(models.CartItem, { foreignKey: 'hospital_id' , as: 'cartItems' })
   Hospital.hasMany(models.Rating, { foreignKey: 'hospital_id' , as: 'ratings' })
-  Hospital.hasMany(models.Notification, { foreignKey: 'created_by' , as: 'notifications' })
+  // Hospital.hasMany(models.Notification, { foreignKey: 'created_by' , as: 'notifications' })
 }
 
 return  Hospital}

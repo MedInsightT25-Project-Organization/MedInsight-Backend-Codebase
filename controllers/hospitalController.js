@@ -145,6 +145,11 @@ class HospitalController {
             as: 'hospitalAdmin',
             attributes: ['id', 'role', 'email'],
           },
+          {
+            model: Appointment,
+            as: 'appointments',
+            attributes: ['id', 'scheduledTime', 'patientId','hospitalId', 'status'],
+          },
         ],
       })
 
@@ -172,6 +177,11 @@ class HospitalController {
             model: User,
             as: 'hospitalAdmin',
             attributes: ['id', 'role', 'email'],
+          },
+          {
+            model: Appointment,
+            as: 'appointments',
+            attributes: ['id', 'scheduledTime', 'patientId','hospitalId', 'status'],
           },
         ],
         attributes: {
@@ -201,9 +211,14 @@ class HospitalController {
       if (!user) {
         return next (new NotFoundError('User not found'))
       }
-      const hospitalId = user.createdBy 
+      const createdBy = user.id
+      
+      const hospital = await Hospital.findOne({where : { createdBy: createdBy }})
+      if (!hospital) {
+        return next (new NotFoundError('Hospital not found'))
+      } 
 
-      const hospital = await Hospital.findOne(hospitalId, {
+      const hospitalProfile = await Hospital.findByPk(hospital.id, {
         include: [
           {
             model: Service,
@@ -219,9 +234,7 @@ class HospitalController {
             model: Appointment,
             as: 'appointments',
             attributes: ['id', 'scheduledTime', 'patientId','hospitalId', 'status'],
-            where: { hospital_id: hospitalId },
           },
-        
         ],
       })
 
@@ -231,7 +244,7 @@ class HospitalController {
 
       res.status(200).json({
         status: 'success',
-        data: hospital,
+        data: hospitalProfile,
       })
     } catch (error) {
       next(error)
