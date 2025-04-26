@@ -1,0 +1,22 @@
+# environment variables
+.env
+
+# node_modules
+node_modules
+
+# logs
+logs
+logs/error.log
+logs/combined.log
+
+# sql files
+*.sql
+
+#uploaded files
+uploads
+
+# doc files
+*.docx
+*.doc
+*.txt
+*.log
