@@ -21,6 +21,10 @@ module.exports = {
         type: Sequelize.FLOAT,
         allowNull: true,
       },
+      address: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
       state: {
         type: Sequelize.STRING,
         allowNull: true,
