@@ -4,6 +4,8 @@ const env = process.env.NODE_ENV || 'development'
 const config = require('../config/config')[env]
 
 // Create Sequelize instance
+const useSSL = process.env.DB_SSL 
+
 const sequelize = new Sequelize(
   config.database,
   config.username,
@@ -12,12 +14,14 @@ const sequelize = new Sequelize(
     host: config.host,
     port: config.port,
     dialect: config.dialect,
-    dialectOptions: {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false,
-      },
-    },
+    dialectOptions: useSSL
+      ? {
+          ssl: {
+            require: true,
+            rejectUnauthorized: false,
+          },
+        }
+      : undefined,
     logging: (msg) => console.log(msg),
     pool: {
       max: 5,
@@ -31,7 +35,7 @@ const sequelize = new Sequelize(
       freezeTableName: true,
     },
   }
-)
+);
 
 // Test database connection
 const testConnection = async () => {
