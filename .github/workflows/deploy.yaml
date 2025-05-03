@@ -1,0 +1,103 @@
+name: Deploy to Laborly Server
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Generate .env file
+        run: |
+          cat <<EOF > .env
+          NODE_ENV=${{ secrets.NODE_ENV }}
+          PORT=${{ secrets.PORT }}
+
+          DB_USER=${{ secrets.DB_USER }}
+          DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+          DB_NAME=${{ secrets.DB_NAME }}
+          DB_HOST=${{ secrets.DB_HOST }}
+          DB_DIALECT=${{ secrets.DB_DIALECT }}
+
+          JWT_SECRET=${{ secrets.JWT_SECRET }}
+          JWT_EXPIRES_IN=${{ secrets.JWT_EXPIRES_IN }}
+          JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }}
+          JWT_REFRESH_EXPIRES_IN=${{ secrets.JWT_REFRESH_EXPIRES_IN }}
+
+          SMTP_HOST=${{ secrets.SMTP_HOST }}
+          SMTP_PORT=${{ secrets.SMTP_PORT }}
+          SMTP_USER=${{ secrets.SMTP_USER }}
+          SMTP_PASS=${{ secrets.SMTP_PASS }}
+
+          REDIS_HOST=${{ secrets.REDIS_HOST }}
+          REDIS_PORT=${{ secrets.REDIS_PORT }}
+          REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}
+
+          FRONTEND_URL=${{ secrets.FRONTEND_URL }}
+
+          RATE_LIMIT_WINDOW=${{ secrets.RATE_LIMIT_WINDOW }}
+          RATE_LIMIT_MAX_REQUESTS=${{ secrets.RATE_LIMIT_MAX_REQUESTS }}
+
+          LOG_LEVEL=${{ secrets.LOG_LEVEL }}
+          LOG_FILE_PATH=${{ secrets.LOG_FILE_PATH }}
+
+          CLOUDINARY_URL=${{ secrets.CLOUDINARY_URL }}
+          CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }}
+          CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}
+          CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          EOF
+
+      - name: Stop existing containers
+        run: docker-compose down || true
+
+      - name: Build and start containers
+        run: |
+          docker-compose down --volumes --remove-orphans || true
+          docker-compose up -d --build
+
+      - name: Wait for NGINX to be ready on port 80
+        run: |
+          echo "⏳ Waiting for NGINX to be ready..."
+          for i in {1..20}; do
+            if curl -sSf http://localhost/.well-known/acme-challenge/test || curl -sSf http://127.0.0.1; then
+              echo "✅ NGINX is ready!"
+              break
+            fi
+            echo "Retrying in 3s..."
+            sleep 3
+          done
+
+      - name: Wait for Redis to be healthy
+        run: |
+          timeout=30
+          echo "Waiting for Redis to be ready..."
+          while ! docker exec redis redis-cli ping | grep -q 'PONG'; do
+            sleep 1
+            timeout=$((timeout - 1))
+            if [ $timeout -le 0 ]; then
+              echo "Redis failed to start"
+              exit 1
+            fi
+          done
+          echo "✅ Redis is ready!"
+
+      # Optional: Run tests if needed
+      # - name: Run Tests
+      #   run: |
+      #     docker-compose run --rm app npm test
+
+      - name: Print container logs if deploy fails
+        if: ${{ failure() }}
+        run: |
+          docker-compose logs
+
+      - name: Run Certbot for SSL (first time only)
+        run: docker-compose run --rm certbot || true
+
+      - name: Restart NGINX to apply HTTPS
+        run: docker-compose restart nginx
