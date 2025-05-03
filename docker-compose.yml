@@ -57,6 +57,8 @@ services:
     depends_on:
       - backend
     restart: unless-stopped
+    networks:
+      - backend
 
   certbot:
     image: certbot/certbot
