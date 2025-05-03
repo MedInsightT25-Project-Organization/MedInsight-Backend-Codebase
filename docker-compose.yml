@@ -71,8 +71,7 @@ services:
       sh -c "certbot certonly --webroot -w /var/www/certbot 
       --email jacinthdavid70@gmail.com 
       --agree-tos --no-eff-email 
-      -d adminer.medinsight.mooo.com
-      -d api.medinsight.mooo.com"
+      -d adminer.medinsight.mooo.com api.medinsight.mooo.com"
     depends_on:
       - nginx
 
