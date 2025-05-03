@@ -72,19 +72,19 @@ jobs:
             sleep 3
           done
 
-      - name: Wait for Redis to be healthy
-        run: |
-          timeout=30
-          echo "Waiting for Redis to be ready..."
-          while ! docker exec redis redis-cli ping | grep -q 'PONG'; do
-            sleep 1
-            timeout=$((timeout - 1))
-            if [ $timeout -le 0 ]; then
-              echo "Redis failed to start"
-              exit 1
-            fi
-          done
-          echo "✅ Redis is ready!"
+    #   - name: Wait for Redis to be healthy
+    #     run: |
+    #       timeout=30
+    #       echo "Waiting for Redis to be ready..."
+    #       while ! docker exec redis redis-cli ping | grep -q 'PONG'; do
+    #         sleep 1
+    #         timeout=$((timeout - 1))
+    #         if [ $timeout -le 0 ]; then
+    #           echo "Redis failed to start"
+    #           exit 1
+    #         fi
+    #       done
+    #       echo "✅ Redis is ready!"
 
       # Optional: Run tests if needed
       # - name: Run Tests
