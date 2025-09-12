@@ -7,6 +7,8 @@
     "start": "node app.js",
     "dev": "nodemon app.js",
     "init-db": "node scripts/initDb.js",
+    "create-db": "sequelize db:create",
+    "migrate": "sequelize db:migrate",
     "test": "jest"
   },
   "keywords": [],
@@ -34,6 +36,6 @@
   "devDependencies": {
     "jest": "^29.5.0",
     "nodemon": "^2.0.22",
-    "sequelize-cli": "^6.6.0"
+    "sequelize-cli": "^6.6.3"
   }
 }

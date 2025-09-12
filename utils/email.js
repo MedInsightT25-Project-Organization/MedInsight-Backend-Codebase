@@ -109,7 +109,7 @@ const sendPasswordResetEmail = async (email, token) => {
 
 const sendVerificationEmail = async (email, token) => {
   try {
-    const verificationUrl = `${process.env.FRONTEND_URL}/api/auth/verify-email?token=${token}`
+    const verificationUrl = `${process.env.FRONTEND_URL}/email-verified?token=${token}`
 
     const mailOptions = {
       from: process.env.SMTP_USER,
