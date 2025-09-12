@@ -1,9 +1,10 @@
 require('dotenv').config()
+const fs = require('fs');
 
 const config = {
   development: {
     username: 'postgres',
-    password: '584623',
+    password: 'jude36amiens',
     database: 'MedInsight',
     host: 'localhost',
     dialect: 'postgres',
@@ -36,7 +37,7 @@ const config = {
     dialectOptions: {
       ssl: {
         require: true,
-        rejectUnauthorized: false,
+        ca: fs.readFileSync(__dirname + '/../certs/BaltimoreCyberTrustRoot.crt.pem').toString(),
       },
     },
     pool: {
